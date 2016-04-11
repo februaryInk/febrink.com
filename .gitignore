@@ -1,0 +1,82 @@
+# COMPILED SOURCE CODE
+
+# Compiled bitmap graphics.
+# Compiled Java class files.
+# Command executable program memory images.
+# Dynamic-link libraries.
+# Directly executable programs.
+# Compiled Python module.
+# Compiled Python files.
+# Object files.
+# Shared object files.
+
+*.cbm
+*.class
+*.com
+*.dll
+*.exe
+*.pyc
+*.pyo
+*.o
+*.so
+
+# COMPRESSED PACKAGES
+
+# If any of these do exist in a project folder, it is better to unpack them and let Git 
+# handle any necessary compression.
+
+# 7-zip archives.
+# Apple disk image archives.
+# GNU zip archives.
+# ISO tables.
+# Java archives.
+# RAR archives.
+# TAR archives.
+# PKZip, WinZip, or Mac OS X archives.
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# IDE GENERATED
+
+# Text editor backup files.
+# Backup files.
+# Brainbloom files.
+# Eclipse files.
+# Vim and Emac swap files.
+
+*~
+*.bak
+.idea
+.project
+*.swp
+
+# OS GENERATED
+
+# Microsoft compressed files.
+# Mac Finder directories.
+# Mac Finder directories.
+# Hidden Windows picture viewing files.
+# Mac search-related files.
+# Hidden Windows thumbnail view files.
+# Hidden Mac trashed files.
+
+._*
+.DS_Store
+.DS_Store?
+ehthumbs.db
+.Spotlight-V100
+thumbs.db
+.Trashes
+
+OTHER
+
+# Commit message text file
+
+/commit-message.txt
