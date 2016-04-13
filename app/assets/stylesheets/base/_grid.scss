@@ -1,0 +1,63 @@
+@mixin column( $width ) {
+    float: left;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    width: $width;
+    
+    &.-parent {
+        @include overflow-clear;
+        
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    &.-stripped {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@mixin prefix( $width ) {
+    margin-left: $width;
+}
+
+@mixin suffix( $width ) {
+    margin-right: $width;
+}
+
+.grid-container {
+    @include overflow-clear;
+}
+
+@for $i from 1 through 20 {
+    $num: $i * 5;
+    
+    .column-#{$num} {
+        @include column( $num * 1% );
+    }
+    
+    .prefix-#{$num} {
+        @include prefix( $num * 1% );
+    }
+    
+    .suffix-#{$num} {
+        @include suffix( $num * 1% );
+    }
+}
+
+@for $i from 0 through 3 {
+    $num: ( $i * 25 ) + 12.5;
+    $whole-num: ( $i * 25 ) + 12;
+    
+    .column-#{$whole-num}-5 {
+        @include column( $num * 1% );
+    }
+    
+    .prefix-#{$whole-num}-5 {
+        @include prefix( $num * 1% );
+    }
+    
+    .suffix-#{$whole-num}-5 {
+        @include suffix( $num * 1% );
+    }
+}

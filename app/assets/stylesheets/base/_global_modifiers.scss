@@ -1,0 +1,22 @@
+.clear { clear: both; }
+
+.full-height { height: 100%; }
+
+.full-width { width: 100%; }
+a.full-width, input[type=submit].full-width { display: block; text-align: center; }
+
+.interactable { cursor: pointer }
+
+.margin-1 { margin: 1em; }
+.margin-2 { margin: 2em; }
+.margin-3 { margin: 3em; }
+
+.margin-b1 { margin-bottom: 1em; }
+
+.margin-l1 { margin-left: 1em; }
+
+.margin-r1 { margin-right: 1em; }
+
+.margin-t1 { margin-top: 1em; }
+
+.no-white-space { line-height: 1em; margin: 0; padding: 0; }

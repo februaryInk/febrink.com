@@ -1,0 +1,60 @@
+@mixin faux-table {
+    border-collapse: collapse;
+    display: table;
+    
+    & > div {
+        display: table-row;
+        width: 100%;
+        
+        & > div {
+            display: table-cell;
+        }
+    }
+}
+
+@mixin overflow-clear {
+    display: block;
+    overflow: hidden;
+    zoom: 1;
+}
+
+@mixin sans-serif-family {
+    font-family: 'Fontin Sans', Helvetica, 'Trebuchet MS', sans-serif;
+}
+
+@mixin serif-family {
+    font-family: 'Fontin', Impact, serif;
+}
+
+@mixin spacers--horizontal {
+    & > * {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+    }
+    
+    & > *:first-child {
+        padding-top: 0;
+    }
+    
+    & > *:last-child {
+        padding-bottom: 0;
+    }
+}
+
+@mixin spacers--vertical {
+    & > * {
+    
+        & > * {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        
+        & > *:first-child {
+            padding-left: 0;
+        }
+        
+        & > *:last-child {
+            padding-right: 0;
+        }
+    }
+}

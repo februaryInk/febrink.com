@@ -1,0 +1,24 @@
+@import 'base/definitions/fonts.scss';
+@import 'base/definitions/variables.scss';
+@import 'base/definitions/mixins.scss';
+
+@import 'base/reset.scss';
+
+@import 'base/footers.scss';
+@import 'base/global_modifiers.scss';
+@import 'base/grid.scss';
+@import 'base/headers.scss';
+@import 'base/layout_elements.scss';
+@import 'base/typography.scss';
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: 100%;
+}
+
+html {
+    font-size: 100%;
+}

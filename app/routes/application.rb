@@ -1,10 +1,11 @@
 class Application < Sinatra::Application
   
-  set :environment, Sprockets::Environment.new
-  set :root, File.dirname( File.expand_path( '../..', __FILE__ ) )
+  set( :environment, Sprockets::Environment.new )
+  set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
   
   environment.append_path( 'app/assets/stylesheets' )
   environment.append_path( 'app/assets/javascripts' )
+  environment.append_path( 'app/assets/fonts' )
   
   environment.js_compressor = :uglify
   environment.css_compressor = :scss
@@ -23,7 +24,7 @@ class Application < Sinatra::Application
       :layout_options => { :views => 'app/views/layouts' } } )
   end
   
-  get '/assets/*' do
+  get( '/assets/*' ) do
     env[ 'PATH_INFO' ].sub!( '/assets', '' )
     settings.environment.call( env )
   end

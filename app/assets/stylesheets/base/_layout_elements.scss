@@ -1,0 +1,13 @@
+.page-content {
+    padding-top: 3em;
+    padding-bottom: 15em;
+    
+    &.-lowered {
+        padding-top: 8em;
+    }
+}
+
+#page-wrapper {
+    min-height: 100%;
+    position: relative;
+}
