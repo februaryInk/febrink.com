@@ -7,7 +7,7 @@ class Application < Sinatra::Application
   environment.append_path( 'app/assets/javascripts' )
   environment.append_path( 'app/assets/fonts' )
   
-  environment.js_compressor = :uglify
+  # environment.js_compressor = :uglify
   environment.css_compressor = :scss
 
   configure do
