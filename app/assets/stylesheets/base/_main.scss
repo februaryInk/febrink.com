@@ -19,6 +19,71 @@ body {
     height: 100%;
 }
 
+hr {
+    border: 0;
+    border-top: 1px solid lighten( $color-charcoal, 60% );
+    height: 0;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
 html {
     font-size: 100%;
+}
+
+.cover-letter {
+    background-color: $color-pattens-blue;
+    height: 400px;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 0;
+}
+
+.cover-letter__content {
+    background-color: rgba( 256, 256, 256, 0.90 );
+    left: 0;
+    padding: 3em 20em;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 400px;
+    vertical-align: middle;
+    width: 100%;
+}
+
+//.cover-letter__content,
+.cover-letter__filter {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.cover-letter__filter {
+    background-color: $color-white;
+    opacity: 0.35;
+}
+
+.resume {
+    padding-top: 1000px;
+    position: relative;
+    z-index: 10;
+}
+
+.resume__section {
+    background-color: $color-white;
+    padding-bottom: 4em;
+    padding-top: 4em;
+    
+    &.-peek-over {
+        padding-bottom: 2em;
+        padding-top: 4em;
+    }
+}
+
+#tree-canvas {
+    background-color: $color-pattens-blue;
 }

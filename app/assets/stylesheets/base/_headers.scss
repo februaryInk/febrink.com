@@ -1,1 +1,11 @@
-
+header {
+    ul {
+        list-display: none;
+        
+        li {
+            float: left;
+            line-height: 4em;
+            margin-right: 2em;
+        }
+    }
+}

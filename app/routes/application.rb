@@ -1,14 +1,16 @@
-class Application < Sinatra::Application
+class Application < Sinatra::Base
   
-  set( :environment, Sprockets::Environment.new )
+  set( :assets, Sprockets::Environment.new )
   set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
   
-  environment.append_path( 'app/assets/stylesheets' )
-  environment.append_path( 'app/assets/javascripts' )
-  environment.append_path( 'app/assets/fonts' )
+  register Sinatra::Contrib
   
-  # environment.js_compressor = :uglify
-  environment.css_compressor = :scss
+  assets.append_path( 'app/assets/stylesheets' )
+  assets.append_path( 'app/assets/javascripts' )
+  assets.append_path( 'app/assets/fonts' )
+  
+  # assets.js_compressor = :uglify
+  assets.css_compressor = :scss
 
   configure do
     disable( :method_override )
@@ -24,8 +26,12 @@ class Application < Sinatra::Application
       :layout_options => { :views => 'app/views/layouts' } } )
   end
   
+  configure( :development ) do
+    register Sinatra::Reloader
+  end
+  
   get( '/assets/*' ) do
     env[ 'PATH_INFO' ].sub!( '/assets', '' )
-    settings.environment.call( env )
+    settings.assets.call( env )
   end
 end

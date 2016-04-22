@@ -6,13 +6,6 @@
  * 
  **************************************************************************** */
 
-$( document ).ready( function(  ) {
-    if ( $( '#tree-canvas' ).length ) {
-        var tree = new Tree( 'tree-canvas' );
-        tree.grow(  );
-    }
-} );
-
 // use prototypal inheritance from Branch, but still use each type's 
 // native constructor.
 Leader.prototype = Object.create( Branch.prototype, { constructor: { value: Leader } } );
@@ -56,13 +49,15 @@ function Tree ( canvasId, config ) {
         leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
         leaves: true,
         maxSproutTime: 10,
-        wiggle: 0.5
+        wiggle: 0.5,
+        initialX: this.canvas.width / 2,
+        initialY: this.canvas.height
     }, config );
 }
 
 Tree.prototype.grow = function(  ) {
     
-    this.leader = new Leader( 0, this, null, this.config.initialWidth, this.canvas.width / 2, this.canvas.height );
+    this.leader = new Leader( 0, this, null, this.config.initialWidth, this.config.initialX, this.config.initialY );
 }
 
 function Branch ( level, generator, parent, width, x, y ) {

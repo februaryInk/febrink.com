@@ -1,6 +1,7 @@
 @mixin faux-table {
     border-collapse: collapse;
     display: table;
+    width: 100%;
     
     & > div {
         display: table-row;
@@ -16,6 +17,10 @@
     display: block;
     overflow: hidden;
     zoom: 1;
+}
+
+@mixin cursive-family {
+    font-family: 'Marck Script', 'Brush Script MT', cursive;
 }
 
 @mixin sans-serif-family {

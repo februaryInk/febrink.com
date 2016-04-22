@@ -1,5 +1,125 @@
 - content_for( :title ) { 'Welcome' }
 
+%script{ :type => 'text/javascript' }
+    :plain
+        $( document ).ready( function(  ) {
+            
+            var coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
+            $( '.js-cover-letter' ).height( coverLetterHeight );
+            $( '.js-resume' ).css( 'padding-top', coverLetterHeight );
+            
+            $( document ).on( 'click', '.js-scroll-link', function( event ) {
+                event.preventDefault(  );
+                
+                var elementPosition = $( $( this ).attr( 'href' ) ).offset(  ).top;
+                $( 'body, html' ).animate( { scrollTop: elementPosition }, 750 );
+            } );
+            
+            if ( $( '#tree-canvas' ).length ) {
+                
+                $( '#tree-canvas' )[ 0 ].height = $( '#tree-canvas' ).parent(  ).height(  );
+                $( '#tree-canvas' )[ 0 ].width = $( '#tree-canvas' ).parent(  ).width(  );
+                
+                var tree = new Tree( 'tree-canvas', {  
+                    leaderHeight: 0.99
+                } );
+                tree.grow(  );
+            }
+        } );
+
 %main
-    Hello World!
-    %canvas#tree-canvas{ :height => 800, :width => 800, :style => 'background-color:grey;' }
+    %div.cover-letter.js-cover-letter
+        %canvas#tree-canvas
+    %div.resume.js-resume
+        %section.resume__section.-peek-over.js-peek-over
+            %div.content
+                %h1.heading.-flourish.-giant.no-white-space
+                    Farrah Brink
+                %header
+                    %ul
+                        %li
+                            %a.js-scroll-link{ :href => '#about' }
+                                About
+                        %li
+                            %a.js-scroll-link{ :href => '#education' }
+                                Education
+                        %li
+                            %a.js-scroll-link{ :href => '#experience' }
+                                Experience
+                        %li
+                            %a.js-scroll-link{ :href => '#skills' }
+                                Skills
+        %section#about.resume__section
+            %div.content
+                %div.column-100
+                    %h2.heading.-flourish.-grand
+                        Hello
+                    %hr.margin-b3
+                    %p
+                        Welcome to febrink.com, the personal site of Farrah Brink (that's me!). I learned web development while earning my undergraduate degree in physics. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript. 
+        %section#education.resume__section
+            %div.content
+                %div.column-100
+                    %h2.heading.-flourish.-grand
+                        Education
+                    %hr.margin-b3
+                %div.column-100
+                    %div.faux-table.margin-b1
+                        %div
+                            %div
+                                %h3.heading.-fine.no-white-space
+                                    B.S. in Physics
+                            %div.align-right
+                                %span.t-medium
+                                    Grand Valley State University
+                    %div.padding-b1
+                        %i
+                            (2010 - 2015)
+                    %ul.bulleted
+                        %li
+                            Minors: Engineering, Mathematics.
+                        %li
+                            Member of the Frederik Meijer Honors College.
+                        %li
+                            Recipient of the Academic Excellence Award in Physics for 2015.
+        %section#experience.resume__section
+            %div.content
+                %div.column-100
+                    %h2.heading.-flourish.-grand
+                        Experience
+                    %hr.margin-b3
+                %div.column-100
+                    %div.faux-table.margin-b1
+                        %div
+                            %div
+                                %h3.heading.-fine.no-white-space
+                                    Ruby on Rails Web Developer
+                            %div.align-right
+                                %span.t-medium
+                                    Maestro, LLC
+                    %div.padding-b1
+                        %i
+                            (June 1, 2015 - April 1, 2016)
+                    %ul.bulleted
+                        %li
+                            Full-stack development of a new large-scale application. Contributed to all aspects of the application code from database planning to API to styling. Was involved in the project from its beginning all the way to final QA.
+                        %li
+                            Maintenance and expansion of multiple existing applications. Performed bug-fixes and added new features as desired by Maestro's clients.
+        %section#skills.resume__section
+            %div.content
+                %div.column-100
+                    %h2.heading.-flourish.-grand
+                        Skills
+                    %hr.margin-b3
+                %div.column-100
+                    %ul.bulleted
+                        %li
+                            Knowledge of Ruby, CSS/SCSS, HTML/HAML, JavaScript/jQuery.
+                        %li
+                            Experience with the Ruby on Rails web application framework.
+                        %li
+                            Experience with Git and version control.
+                        %li
+                            Modest experience with Amazon Web Services, Heroku, and server setup.
+                        %li
+                            Modest knowledge of Java and Python.

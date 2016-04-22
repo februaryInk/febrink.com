@@ -1,7 +1,13 @@
+a {
+    color: $color-charcoal;
+    font-size: 18px;
+    text-decoration: none;
+}
+
 body {
     @include sans-serif-family;
 
-    color: $color-tundora;
+    color: $color-charcoal;
 }
 
 h1, h2, h3, h4, h5, h6 { margin-bottom: 16px; }
@@ -17,17 +23,31 @@ label {
 
 p {
     font-size: 18px;
-    line-height: 1.5em;
+    line-height: 1.75em;
     margin-bottom: 16px;
 }
 
 b, strong { font-weight: bold; }
 em, i { font-style: italic; }
 
+.align-center { text-align: center; }
+.align-left { text-align: left; }
+.align-right { text-align: right; }
+
+.bulleted {
+    display: block;
+    font-size: 18px;
+    line-height: 1.5em;
+    list-style: disc outside none;
+    padding-left: 1em;
+}
+
 .centered { text-align: center; }
 
 .heading { 
     @include serif-family;
+    
+    &.-flourish { @include cursive-family; }
     
     &.-fine { font-size: 24px; }
     &.-medium { font-size: 28px; }
@@ -41,4 +61,11 @@ em, i { font-style: italic; }
 .t-large { font-size: 20px; }
 
 a, span { &.underlined { text-decoration: underline; } }
-h1, h2, h3, h4, h5, h6 { &.underlined { border-bottom: 2px solid $color-tundora; display: block; padding-bottom: 4px; width: 100%; } }
+h1, h2, h3, h4, h5, h6 { 
+    &.underlined { 
+        border-bottom: 1px solid $color-charcoal; 
+        display: block; 
+        padding-bottom: 4px; 
+        width: 100%; 
+    } 
+}
