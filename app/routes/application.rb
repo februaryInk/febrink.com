@@ -1,5 +1,7 @@
 class Application < Sinatra::Base
   
+  require 'autoprefixer-rails'
+  
   set( :assets, Sprockets::Environment.new )
   set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
   
@@ -9,8 +11,9 @@ class Application < Sinatra::Base
   assets.append_path( 'app/assets/javascripts' )
   assets.append_path( 'app/assets/fonts' )
   
-  # assets.js_compressor = :uglify
   assets.css_compressor = :scss
+  
+  AutoprefixerRails.install( assets )
 
   configure do
     disable( :method_override )
@@ -30,6 +33,16 @@ class Application < Sinatra::Base
     register Sinatra::Reloader
   end
   
+  configure( :production ) do
+    assets.js_compressor = :uglify
+  end
+  
+  assets.context_class.class_eval do
+    def asset_path(path, options = {})
+      "/assets/#{path}"
+    end
+  end
+    
   get( '/assets/*' ) do
     env[ 'PATH_INFO' ].sub!( '/assets', '' )
     settings.assets.call( env )

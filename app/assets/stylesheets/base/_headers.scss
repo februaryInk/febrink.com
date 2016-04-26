@@ -1,4 +1,15 @@
 header {
+    position: relative;
+    
+    a {
+        border-bottom: 2px solid $color-white;
+        padding-bottom: 2px;
+        
+        &:hover {
+            border-bottom: 2px solid $color-nobel;
+        }
+    }
+    
     ul {
         list-display: none;
         

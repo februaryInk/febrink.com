@@ -1,6 +1,8 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    autoprefixer-rails (6.3.6)
+      execjs
     backports (3.6.8)
     concurrent-ruby (1.0.1)
     daemons (1.2.3)
@@ -42,6 +44,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autoprefixer-rails
   haml
   puma
   sass

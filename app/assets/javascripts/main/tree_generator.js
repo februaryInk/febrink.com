@@ -12,10 +12,17 @@ Leader.prototype = Object.create( Branch.prototype, { constructor: { value: Lead
 Limb.prototype = Object.create( Branch.prototype, { constructor: { value: Limb } } );
 Twig.prototype = Object.create( Branch.prototype, { constructor: { value: Twig } } );
 
-function Tree ( canvasId, config ) {
+function Tree ( canvasId, type, config ) {
+  
+    Tree.prototype.instances.push( this );
     
-    this.branches = [  ];
+    this.live = true;
+    this.type = type;
+    
     this.leader = null;
+    this.leaves = [  ];
+    this.limbs = [  ];
+    this.twigs = [  ];
     
     this.canvas = {
         $element: $( '#' + canvasId ),
@@ -23,6 +30,34 @@ function Tree ( canvasId, config ) {
         height: $( '#' + canvasId ).height(  ),
         width: $( '#' + canvasId ).width(  )
     }
+    
+    var type_config = {  };
+    
+    if ( this.type == 'birch' ) {
+        type_config = {
+            branchColor: '#eeeeee',
+            leafColors: [ '#669900', '#99cc00', '#ddee99' ], 
+            limbAngleLimit: Math.PI / 3.0,
+            maxLeaderLimbs: 10,
+            twigLeafThresh: 0.50,
+            wiggle: 0.2
+        }
+    } else if ( this.type == 'cherry' ) {
+        type_config = {
+            branchColor: '#332222',
+            leafColors: [ '#ffffff', '#ff3399', '#ffcccc', '#ff6699' ], 
+            limbAngleLimit: Math.PI / 2.0,
+            wiggle: 1
+        }
+    } else if ( this.type == 'willow' ) {
+        type_config = {
+            branchColor: '#444444',
+            leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
+            twigShape: 'cubic',
+            wiggle: 0.5
+        }
+    }
+    
     // avgNumLeaderBranches: statistically typical number of branches off the 
     // leader.
     // baseGrowthRate: base delay between each growth iteration (actual rates 
@@ -30,34 +65,95 @@ function Tree ( canvasId, config ) {
     // slower overall growth.
     // branchColor: branch color.
     // branchWidth: width of a branch in proportion to its parent.
+    // grass: should this tree be in grass?
     // initialWidth: starting width of the leader.
     // leaderHeight: height of the leader in proportion to the canvas height.
     // leafColors: possible leaf colors.
     // leaves: should this tree grow leaves?
+    // limbAngleLimit: greatest angle that a limb can originally deviate from 
+    // its parent's angle.
+    // maxLeaderLimbs: maximum number of limbs that can grow off the leader.
+    // maxLimbLimbs: maximum number of limbs that can grow off a limb.
     // maxSproutTime: maximum time that can pass between the initial generation 
     // of limbs and twigs and their growth.
+    // twigLeafThresh: chances a leaf will grow on a twig when conditions are
+    // suitable.
+    // twigShape: shape that twigs grow in.
     // wiggle: roughly, the scalar for the amount each growth iteration can 
     // deviate from its previous path.
+    // xOrigin: the starting x-position.
+    // yOrigin: the starting y-position.
     
     this.config = $.extend( {
         avgNumLeaderBranches: 15, 
         baseGrowthRate: 3, 
         branchColor: '#444444',
         branchWidth: 0.80,
+        grass: true,
         initialWidth: 30, 
-        leaderHeight: 0.90, 
-        leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
+        leaderHeight: 0.95, 
+        leafColors: [ '#009933', '#33cc33', '#66ff33' ], 
         leaves: true,
+        limbAngleLimit: 4.0 * Math.PI / 9.0,
+        maxLeaderLimbs: 15,
+        maxLimbLimbs: 2,
         maxSproutTime: 10,
-        wiggle: 0.5,
-        initialX: this.canvas.width / 2,
-        initialY: this.canvas.height
-    }, config );
+        twigLeafThresh: 0.80,
+        twigShape: 'random',
+        wiggle: 0.5, 
+        xOrigin: this.canvas.width / 2,
+        yOrigin: this.canvas.height, 
+    }, type_config, config );
+    
+    if ( this.config.grass ) {
+        var bladeHeight;
+        var color;
+        var endPoint;
+        var grassColors = [ '#222222', '#777777', '#aaaaaa', '#ffffff' ];
+        var bladeSway;
+        
+        for ( var i = 0; i <= Math.floor( this.canvas.width ); i = i + 2 ) {
+            bladeHeight = Math.random(  ) * ( 0.07 * this.canvas.height - ( 0.03 * this.canvas.height ) ) + ( 0.03 * this.canvas.height );
+            color = grassColors[ Math.floor( Math.random(  ) * grassColors.length ) ];
+            bladeSway = 0.25 * ( Math.random(  ) * ( bladeHeight - ( -1 * bladeHeight ) ) + -1 * bladeHeight );
+            endPoint = [ i + bladeSway, this.canvas.height - bladeHeight ];
+            
+            this.canvas.context2d.lineWidth = 1;
+            this.canvas.context2d.strokeStyle = color;
+            
+            this.canvas.context2d.beginPath(  );
+            this.canvas.context2d.moveTo( i, this.canvas.height );
+            this.canvas.context2d.quadraticCurveTo( i, endPoint[ 1 ], endPoint[ 0 ], endPoint[ 1 ] );
+            this.canvas.context2d.stroke(  );
+        }
+    }
 }
 
 Tree.prototype.grow = function(  ) {
     
-    this.leader = new Leader( 0, this, null, this.config.initialWidth, this.config.initialX, this.config.initialY );
+    this.leader = new Leader( 0, this, null, this.config.initialWidth, this.config.xOrigin, this.config.yOrigin );
+}
+
+Tree.prototype.instances = [  ];
+
+Tree.prototype.kill = function(  ) {
+    
+    this.live = false;
+    this.leader.live = false;
+    
+    var i;
+    
+    for ( i = 0; i < this.limbs.length; i++ ) {
+        this.limbs[ i ].live = false;
+    }
+    
+    for ( i = 0; i < this.twigs.length; i++ ) {
+        this.twigs[ i ].live = false;
+    }
+    
+    for ( i = 0; i < this.leaves.length; i++ ) {
+        this.leaves[ i ].live = false;
+    }
 }
 
 function Branch ( level, generator, parent, width, x, y ) {
@@ -68,6 +164,7 @@ function Branch ( level, generator, parent, width, x, y ) {
     
     // level: ancestry distance from the leader.
     // lifetime: number of growth iterations this branch has gone through.
+    // live: should this branch continue growing?
     // generator: pointer for the origin tree generator.
     // parent: branch that split to form this one.
     // width: width tracker.
@@ -78,6 +175,7 @@ function Branch ( level, generator, parent, width, x, y ) {
     
     this.level = level;
     this.lifetime = 0;
+    this.live = generator.live;
     this.generator = generator;
     this.parent = parent;
     this.width = width;
@@ -133,11 +231,16 @@ Branch.prototype.generateLeaf = function (  ) {
     
     if ( this.generator.config.leaves ) {
         var flex = this.width * 3;
-        var x = this.x + ( Math.random(  ) * ( flex - ( -1 * flex ) ) + ( -1 * flex ) );
+        var angle = Math.atan2( this.dy, this.dx );
+        var flexX = flex * Math.abs( Math.sin( angle ) );
+        var flexY = flex * Math.abs( Math.cos( angle ) );
+        var x = this.x + ( Math.random(  ) * ( flexX - ( -1 * flexX ) ) + ( -1 * flexX ) );
+        var y = this.y + ( Math.random(  ) * ( flexY - ( -1 * flexY ) ) + ( -1 * flexY ) );
         
-        childLeaf = new Leaf( this.generator, this, this.width * 2, x, this.y );
+        childLeaf = new Leaf( this.generator, this, this.width * 2, x, y );
         
         this.leaves.push( childLeaf );
+        this.generator.leaves.push( childLeaf );
     }
 }
 
@@ -150,6 +253,7 @@ Branch.prototype.generateLimb = function (  ) {
     var childLimb = new Limb( this.level + 1, this.generator, this, width, x, y );
         
     this.limbs.push( childLimb );
+    this.generator.limbs.push( childLimb );
     this.width = this.width * this.postLimbWidth;
 }
 
@@ -162,32 +266,41 @@ Branch.prototype.generateTwig = function(  ) {
     var childTwig = new Twig( this.level + 1, this.generator, this, width, x, y );
         
     this.twigs.push( childTwig );
+    this.generator.twigs.push( childTwig );
 }
 
 Branch.prototype.grow = function(  ) {
     
-    this.generator.canvas.context2d.lineWidth = this.width;
-    this.generator.canvas.context2d.beginPath(  );
-    this.generator.canvas.context2d.moveTo( this.x, this.y );
-    
-    this.lifetime = this.lifetime + 1;
-    this.width = this.width - this.loss;
-    this.x = this.x + this.dx;
-    this.y = this.y + this.dy;
-    
-    this.generator.canvas.context2d.strokeStyle = this.generator.config.branchColor;
-    this.generator.canvas.context2d.lineTo( this.x, this.y );
-    this.generator.canvas.context2d.stroke(  );
-    
-    if ( this.canSplit(  ) ) {
-        this.split(  );
+    if ( this.live ) {
+        // the leader needs to be behind the grass.
+        if ( this.constructor == Leader ) {
+            this.generator.canvas.context2d.globalCompositeOperation = 'destination-over';
+        }
+        
+        this.generator.canvas.context2d.lineWidth = this.width;
+        this.generator.canvas.context2d.beginPath(  );
+        this.generator.canvas.context2d.moveTo( this.x, this.y );
+        
+        this.lifetime = this.lifetime + 1;
+        this.width = this.width - this.loss;
+        this.x = this.x + this.dx;
+        this.y = this.y + this.dy;
+        
+        this.generator.canvas.context2d.strokeStyle = this.generator.config.branchColor;
+        this.generator.canvas.context2d.lineTo( this.x, this.y );
+        this.generator.canvas.context2d.stroke(  );
+        this.generator.canvas.context2d.globalCompositeOperation = 'source-over';
+        
+        if ( this.canSplit(  ) ) {
+            this.split(  );
+        }
+        
+        if ( this.canLeaf(  ) ) {
+            this.generateLeaf(  );
+        }
+        
+        this.continueGrowth(  );
     }
-    
-    if ( this.canLeaf(  ) ) {
-        this.generateLeaf(  );
-    }
-    
-    this.continueGrowth(  );
 }
 
 Branch.prototype.guide = function (  ) {
@@ -231,7 +344,7 @@ function Leader ( level, generator, parent, width, x, y ) {
     this.growthRate = this.generator.config.baseGrowthRate;
     this.expectedLifetime = ( ( this.generator.config.leaderHeight * this.generator.canvas.height ) / this.dy );
     this.loss = ( this.generator.config.initialWidth - 1 ) / this.expectedLifetime;
-    this.maxLimbs = 15;
+    this.maxLimbs = this.generator.config.maxLeaderLimbs;
     this.postLimbWidth = 1.00;
     this.splitThresh = ( 4 / 3 ) * ( this.generator.config.avgNumLeaderBranches / this.expectedLifetime );
     
@@ -254,17 +367,22 @@ Leader.prototype.guide = function(  ) {
 
 Leader.prototype.twigThresh = function (  ) {
     
-    return( ( this.lifetime / this.expectedLifetime ) - ( 3 / 4 ) * this.expectedLifetime );
+    return( ( this.lifetime / this.expectedLifetime ) - ( 3 / 4 ) );
 }
 
 // non-inheriting prototype used to generate leaves on twigs.
 function Leaf ( generator, parent, radius, x, y ) {
     
     this.generator = generator;
+    this.live = this.generator.live;
     this.parent = parent;
     this.radius = radius;
     this.x = x;
     this.y = y;
+    
+    if ( this.radius > this.generator.config.initialWidth / 4 ) {
+        this.radius = this.generator.config.initialWidth / 4;
+    }
     
     var self = this;
     
@@ -275,10 +393,12 @@ function Leaf ( generator, parent, radius, x, y ) {
 
 Leaf.prototype.grow = function (  ) {
     
-    this.generator.canvas.context2d.beginPath(  );
-    this.generator.canvas.context2d.arc( this.x, this.y, this.radius, 0, 2 * Math.PI, false );
-    this.generator.canvas.context2d.fillStyle = this.generator.config.leafColors[ Math.floor( Math.random(  ) * this.generator.config.leafColors.length ) ];
-    this.generator.canvas.context2d.fill(  );
+    if ( this.live ) {
+        this.generator.canvas.context2d.beginPath(  );
+        this.generator.canvas.context2d.arc( this.x, this.y, this.radius, 0, 2 * Math.PI, false );
+        this.generator.canvas.context2d.fillStyle = this.generator.config.leafColors[ Math.floor( Math.random(  ) * this.generator.config.leafColors.length ) ];
+        this.generator.canvas.context2d.fill(  );
+    }
 }
 
 // sub-branches that can split into twigs or, sometimes, a few other limbs.
@@ -286,16 +406,6 @@ function Limb ( level, generator, parent, width, x, y ) {
     
     // constructor stealing.
     Branch.call( this, level, generator, parent, width, x, y );
-    
-    // calculate an angle that is within 4 * Math.PI / 9 radians (80 degrees) in
-    // either direction of the parent branch's angle, and start the limb in that
-    // direction.
-    
-    var limitingAngle = 4.0 * Math.PI / 9.0;
-    var parentDx = this.parent.dx;
-    var parentDy = this.parent.dy;
-    var parentAngle = Math.atan2( parentDy, parentDx );
-    var angle = Math.random(  ) * ( ( parentAngle + limitingAngle ) - ( parentAngle - limitingAngle ) ) + ( parentAngle - limitingAngle );
     
     // dx: see Branch.
     // dy: see Branch.
@@ -306,12 +416,20 @@ function Limb ( level, generator, parent, width, x, y ) {
     // splitThresh: chance the branch will split into a new branch. calculated 
     // here with this.splitThresh * ( 3 / 4 ) * this.expectedLifetime = this.generator.config.avgNumLeaderBranches
     
+    // calculate an angle that is within 4 * Math.PI / 9 radians (80 degrees) in
+    // either direction of the parent branch's angle, and start the limb in that
+    // direction.
+    
+    var limitingAngle = this.generator.config.limbAngleLimit;
+    var parentAngle = Math.atan2( this.parent.dy, this.parent.dx );
+    var angle = Math.random(  ) * ( ( parentAngle + limitingAngle ) - ( parentAngle - limitingAngle ) ) + ( parentAngle - limitingAngle );
+    
     this.dx = 3 * Math.cos( angle );
     this.dy = 3 * Math.sin( angle );
     this.growthRate = this.generator.config.baseGrowthRate;
     // TODO: Inversely relate this to wiggle, since wiggle affects limb length.
     this.loss = ( level <= 1 ? this.parent.loss * this.generator.config.branchWidth : this.parent.parent.loss / this.generator.config.branchWidth );
-    this.maxLimbs = ( level <= 1 ? 2 : 0 );
+    this.maxLimbs = ( level <= 1 ? this.generator.config.maxLimbLimbs : 0 );
     this.postLimbWidth = 0.80;
     this.splitThresh = this.parent.splitThresh * ( 5 / 4 );
     
@@ -335,13 +453,14 @@ Limb.prototype.continueGrowth = function (  ) {
         this.guide(  );
         
         setTimeout( function (  ) {
-			      self.grow(  );
-		    }, this.growthRate );
+            self.grow(  );
+        }, this.growthRate );
     // terminate in a small twig.
     } else {
         var childTwig = new Twig( this.level + 1, this.generator, this, this.width, this.x, this.y );
         
         this.twigs.push( childTwig );
+        this.generator.twigs.push( childTwig );
     }
 }
 
@@ -362,34 +481,57 @@ function Twig ( level, generator, parent, width, x, y ) {
     // constructor stealing.
     Branch.call( this, level, generator, parent, width, x, y );
     
-    // ensure the direction of growth is correct.
-    var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
-    
     // dx: see Branch.
     // dy: see Branch.
     // growthRate: see Branch.
     // leafThresh: chance a new leaf will grow when conditions are appropriate.
     // loss: see Branch.
     
-    this.dy = 3;
-    this.dx = 3 * direction * ( this.dy / Math.abs( this.dy ) ) * Math.pow( Math.abs( this.dy ), 1 / 3 );
     this.growthRate = this.generator.config.baseGrowthRate * 2;
-    this.leafThresh = 0.80;
-    this.loss = this.parent.loss / 2;
+    this.leafThresh = this.generator.config.twigLeafThresh;
+        
+    if ( this.generator.config.twigShape == 'cubic' ) {
+        // ensure the direction of growth is correct.
+        var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
+        
+        this.dy = 3;
+        this.dx = 3 * direction * ( this.dy / Math.abs( this.dy ) ) * Math.pow( Math.abs( this.dy ), 1 / 3 );
+        this.loss = this.parent.loss / 2;
+        
+        // never let a twig be so wide that it will extend beyond the canvas.
+        // make sure it will stop within the last 20%, if not before.
+        // maxWidth - ( maxLifetime * this.loss ) = 1
+        
+        var maxLifetime = ( ( this.generator.canvas.height - ( this.generator.canvas.height * ( 0.20 * Math.random(  ) ) ) ) - this.y ) / this.dy;
+        var maxWidth = 1 + ( maxLifetime * this.loss )
+        
+        if ( this.width > maxWidth ) {
+            this.width = maxWidth;
+        }
+    } else if ( this.generator.config.twigShape == 'random' ) {
+        // calculate an angle that is within 4 * Math.PI / 9 radians (80 degrees) in
+        // either direction of the parent branch's angle, and start the limb in that
+        // direction.
+        
+        var limitingAngle = this.generator.config.limbAngleLimit;
+        var parentAngle = Math.atan2( this.parent.dy, this.parent.dx );
+        var angle = Math.random(  ) * ( ( parentAngle + limitingAngle ) - ( parentAngle - limitingAngle ) ) + ( parentAngle - limitingAngle );
     
-    // never let a twig be so wide that it will extend beyond the canvas.
-    // make sure it will stop within the last 20%, if not before.
-    // maxWidth - ( maxLifetime * this.loss ) = 1
-    
-    var maxLifetime = ( ( this.generator.canvas.height - ( this.generator.canvas.height * ( 0.20 * Math.random(  ) ) ) ) - this.y ) / this.dy;
-    var maxWidth = 1 + ( maxLifetime * this.loss )
-    
-    if ( this.width > maxWidth ) {
-        this.width = maxWidth;
+        this.dx = 3 * Math.cos( angle );
+        this.dy = 3 * Math.sin( angle );
+        this.loss = this.parent.loss;
+        
+        var maxWidth = this.generator.config.initialWidth / 5;
+        
+        if ( this.width > maxWidth ) {
+            this.width = maxWidth;
+        }
+    } else {
+        this.width = 0;
     }
     
     var self = this;
-    
+        
     setTimeout( function(  ) {
         self.grow(  );
     }, Math.random(  ) * this.generator.config.maxSproutTime );
@@ -399,18 +541,26 @@ Twig.prototype.canLeaf = function (  ) {
     
     if ( this.leaves.length ) {
         var lastLeaf = this.leaves[ this.leaves.length - 1 ];
+        var distToLastLeaf = Math.pow( Math.pow( Math.abs( this.y - lastLeaf.y ), 2 ) + Math.pow( Math.abs( this.x - lastLeaf.x ), 2 ), 1 / 2 );
     
-        return( Math.abs( this.y - lastLeaf.y ) > lastLeaf.radius * 2 && Math.random(  ) < this.leafThresh );
+        return( distToLastLeaf > lastLeaf.radius * 2 && Math.random(  ) < this.leafThresh );
     } else {
-        return( this.lifetime > 3 && Math.random(  ) < this.leafThresh );
+        var distToThisOrigin = Math.pow( Math.pow( Math.abs( this.y - this.yOrigin ), 2 ) + Math.pow( Math.abs( this.x - this.xOrigin ), 2 ), 1 / 2 );
+        return( distToThisOrigin > this.width * 5 && Math.random(  ) < this.leafThresh );
     }
 }
 
 Twig.prototype.guide = function(  ) {
     
-    var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
-    
-    // x = ( y - yOrigin )^( 1 / 3 ) + xOrigin
-    this.dy = 3;
-    this.dx = 3 * direction * ( ( ( this.y + this.dy ) - this.yOrigin ) / Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) * ( Math.pow( Math.abs( ( this.y + this.dy ) - this.yOrigin ), 1 / 3 ) - ( ( this.y - this.yOrigin ) / Math.abs( this.y - this.yOrigin ) ) * Math.pow( Math.abs( this.y - this.yOrigin ), 1 / 3 ) );
+    if ( this.generator.config.twigShape == 'cubic' ) {
+        
+        var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
+        
+        // x = ( y - yOrigin )^( 1 / 3 ) + xOrigin
+        this.dy = 3;
+        this.dx = 3 * direction * ( ( ( this.y + this.dy ) - this.yOrigin ) / Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) * ( Math.pow( Math.abs( ( this.y + this.dy ) - this.yOrigin ), 1 / 3 ) - ( ( this.y - this.yOrigin ) / Math.abs( this.y - this.yOrigin ) ) * Math.pow( Math.abs( this.y - this.yOrigin ), 1 / 3 ) );
+    } else if ( this.generator.config.twigShape == 'random' ) {
+        this.dx = this.dx + Math.sin( Math.random(  ) + this.lifetime ) * this.generator.config.wiggle;
+        this.dy = this.dy + Math.cos( Math.random(  ) + this.lifetime ) * this.generator.config.wiggle;
+    }
 }

@@ -3,11 +3,7 @@
 %script{ :type => 'text/javascript' }
     :plain
         $( document ).ready( function(  ) {
-            
-            var coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
-            $( '.js-cover-letter' ).height( coverLetterHeight );
-            $( '.js-resume' ).css( 'padding-top', coverLetterHeight );
-            
+        
             $( document ).on( 'click', '.js-scroll-link', function( event ) {
                 event.preventDefault(  );
                 
@@ -15,17 +11,39 @@
                 $( 'body, html' ).animate( { scrollTop: elementPosition }, 750 );
             } );
             
+            prepareCoverLetter(  );
+        } );
+        
+        $( window ).resize( function(  ) {
+            prepareCoverLetter(  );
+        } );
+        
+        var prepareCoverLetter = function(  ) {
+            var coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
+            
+            if ( coverLetterHeight < 0 ) {
+                coverLetterHeight = window.innerHeight;
+            }
+            
+            $( '.js-cover-letter' ).height( coverLetterHeight );
+            $( '.js-resume' ).css( 'padding-top', coverLetterHeight );
+            
             if ( $( '#tree-canvas' ).length ) {
                 
+                for ( var i = 0; i < Tree.prototype.instances.length; i++ ) {
+                    Tree.prototype.instances[ i ].kill(  );
+                    Tree.prototype.instances.splice( i, 1 );
+                }
+                                
                 $( '#tree-canvas' )[ 0 ].height = $( '#tree-canvas' ).parent(  ).height(  );
                 $( '#tree-canvas' )[ 0 ].width = $( '#tree-canvas' ).parent(  ).width(  );
                 
-                var tree = new Tree( 'tree-canvas', {  
+                var tree = new Tree( 'tree-canvas', 'willow', {  
                     leaderHeight: 0.99
                 } );
                 tree.grow(  );
             }
-        } );
+        }
 
 %main
     %div.cover-letter.js-cover-letter
@@ -36,19 +54,20 @@
                 %h1.heading.-flourish.-giant.no-white-space
                     Farrah Brink
                 %header
-                    %ul
-                        %li
-                            %a.js-scroll-link{ :href => '#about' }
-                                About
-                        %li
-                            %a.js-scroll-link{ :href => '#education' }
-                                Education
-                        %li
-                            %a.js-scroll-link{ :href => '#experience' }
-                                Experience
-                        %li
-                            %a.js-scroll-link{ :href => '#skills' }
-                                Skills
+                    %nav
+                        %ul
+                            %li
+                                %a.js-scroll-link{ :href => '#about' }
+                                    About
+                            %li
+                                %a.js-scroll-link{ :href => '#education' }
+                                    Education
+                            %li
+                                %a.js-scroll-link{ :href => '#experience' }
+                                    Experience
+                            %li
+                                %a.js-scroll-link{ :href => '#skills' }
+                                    Skills
         %section#about.resume__section
             %div.content
                 %div.column-100
@@ -56,7 +75,15 @@
                         Hello
                     %hr.margin-b3
                     %p
-                        Welcome to febrink.com, the personal site of Farrah Brink (that's me!). I learned web development while earning my undergraduate degree in physics. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript. 
+                        Welcome to febrink.com, the personal site of Farrah Brink (that's me!). I learned programming while earning my undergraduate degree in physics, partly from coursework but mostly from my own studies. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript.
+                    %div.centered
+                        %div.icons
+                            %div.icon
+                                %a{ :href => 'https://github.com/februaryInk', :target => '_blank' }
+                                    = erb :'core_pages/_github_icon'
+                            %div.icon
+                                %a{ :href => 'https://www.linkedin.com/pub/farrah-brink/b7/ba3/10a', :target => '_blank' }
+                                    = erb :'core_pages/_linkedin_icon'
         %section#education.resume__section
             %div.content
                 %div.column-100

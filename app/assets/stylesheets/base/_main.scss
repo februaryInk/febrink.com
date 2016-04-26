@@ -41,30 +41,18 @@ html {
     z-index: 0;
 }
 
-.cover-letter__content {
-    background-color: rgba( 256, 256, 256, 0.90 );
-    left: 0;
-    padding: 3em 20em;
-    position: absolute;
-    right: 0;
-    text-align: center;
-    top: 400px;
-    vertical-align: middle;
-    width: 100%;
+.icon {
+    display: inline-block;
+    height: 2em;
+    width: 3em;
+    padding: 0 0.5em;
 }
 
-//.cover-letter__content,
-.cover-letter__filter {
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-.cover-letter__filter {
-    background-color: $color-white;
-    opacity: 0.35;
+.icons {
+    display: inline-block;
+    margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .resume {
@@ -81,6 +69,10 @@ html {
     &.-peek-over {
         padding-bottom: 2em;
         padding-top: 4em;
+        
+        @media ( max-width: 42em ) {
+          padding-top: 2em;
+        }
     }
 }
 
