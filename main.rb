@@ -1,6 +1,11 @@
+ENV[ 'RACK_ENV' ] ||= 'development'
+
+require 'rubygems'
+require 'bundler'
+
+Bundler.require( :default, ENV[ 'RACK_ENV' ].to_sym )
+
 class Application < Sinatra::Base
-  
-  require 'autoprefixer-rails'
   
   set( :assets, Sprockets::Environment.new )
   set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
@@ -25,20 +30,12 @@ class Application < Sinatra::Base
       :layout_options => { :views => 'app/views/layouts' } } )
     
     # specifying a default layout causes a conflict with content_for. why?
-    set( :haml, { :format => :html5, 
+    set( :haml, { :format => :html5, # :layout => :default,
       :layout_options => { :views => 'app/views/layouts' } } )
   end
   
-  configure( :development ) do
-    register Sinatra::Reloader
-  end
-  
-  configure( :production ) do
-    assets.js_compressor = :uglify
-  end
-  
   assets.context_class.class_eval do
-    def asset_path(path, options = {})
+    def asset_path( path, options = {  } )
       "/assets/#{path}"
     end
   end
@@ -48,3 +45,5 @@ class Application < Sinatra::Base
     settings.assets.call( env )
   end
 end
+
+require_relative( './app/routes/init.rb' )
