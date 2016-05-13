@@ -1,8 +1,18 @@
 header {
-    position: relative;
+    background-color: $color-white;
+    padding-top: 4em;
+    width: 100%;
+    
+    @media ( max-width: 42em ) {
+        padding-top: 2em;
+    }
+}
+
+.header__nav {
+    background-color: rgba( 256, 256, 256, 0.90 );
     
     a {
-        border-bottom: 2px solid $color-white;
+        border-bottom: 2px solid transparent;
         padding-bottom: 2px;
         
         &:hover {
@@ -12,6 +22,7 @@ header {
     
     ul {
         list-display: none;
+        width: 100%;
         
         li {
             float: left;
@@ -19,4 +30,18 @@ header {
             margin-right: 2em;
         }
     }
+    
+    &.-sticky {
+        border-bottom: 1px solid $color-silver;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+
+.header__nav-wrapper {
+    height: 4em;
+    width: 100%;
 }

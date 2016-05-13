@@ -21,7 +21,7 @@ body {
 
 hr {
     border: 0;
-    border-top: 1px solid lighten( $color-charcoal, 60% );
+    border-top: 1px solid $color-gainsboro;
     height: 0;
     margin-bottom: 16px;
     margin-top: 16px;
@@ -35,7 +35,7 @@ html {
     background-color: $color-pattens-blue;
     height: 400px;
     left: 0;
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
     z-index: 0;
@@ -56,9 +56,7 @@ html {
 }
 
 .resume {
-    padding-top: 1000px;
-    position: relative;
-    z-index: 10;
+    //position: relative;
 }
 
 .resume__section {

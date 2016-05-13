@@ -24,7 +24,9 @@ gem 'sinatra-redirect-with-flash'
 
 gem 'sprockets'
 
-gem 'thin'
+# gem 'thin'
+
+gem 'tilt', :require => [ 'tilt/erb', 'tilt/haml' ]
 
 gem 'uglifier'
 

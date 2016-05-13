@@ -30,7 +30,7 @@ class Application < Sinatra::Base
       :layout_options => { :views => 'app/views/layouts' } } )
     
     # specifying a default layout causes a conflict with content_for. why?
-    set( :haml, { :format => :html5, # :layout => :default,
+    set( :haml, { :format => :html5,# :layout => :default,
       :layout_options => { :views => 'app/views/layouts' } } )
   end
   

@@ -2,12 +2,15 @@
 
 %script{ :type => 'text/javascript' }
     :plain
+        var coverLetterHeight = 0;
+        var headerHeight = 0;
+        
         $( document ).ready( function(  ) {
         
             $( document ).on( 'click', '.js-scroll-link', function( event ) {
                 event.preventDefault(  );
                 
-                var elementPosition = $( $( this ).attr( 'href' ) ).offset(  ).top;
+                var elementPosition = $( $( this ).attr( 'href' ) ).offset(  ).top - $( '.js-sticky-nav' ).height(  );
                 $( 'body, html' ).animate( { scrollTop: elementPosition }, 750 );
             } );
             
@@ -19,14 +22,14 @@
         } );
         
         var prepareCoverLetter = function(  ) {
-            var coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
+            coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
             
             if ( coverLetterHeight < 0 ) {
                 coverLetterHeight = window.innerHeight;
             }
             
             $( '.js-cover-letter' ).height( coverLetterHeight );
-            $( '.js-resume' ).css( 'padding-top', coverLetterHeight );
+            $( '.js-peek-over' ).css( 'margin-top', coverLetterHeight );
             
             if ( $( '#tree-canvas' ).length ) {
                 
@@ -44,17 +47,27 @@
                 tree.grow(  );
             }
         }
+        
+        $( window ).scroll( function(  ) {
+            if ( $( this ).scrollTop(  ) > $( '.js-sticky-nav-wrapper' ).offset(  ).top ) {
+                $( '.js-sticky-nav' ).addClass( '-sticky' );
+            } else {
+                $( '.js-sticky-nav' ).removeClass( '-sticky' );
+            }
+        } );
 
 %main
     %div.cover-letter.js-cover-letter
         %canvas#tree-canvas
-    %div.resume.js-resume
-        %section.resume__section.-peek-over.js-peek-over
-            %div.content
+    %header.js-peek-over
+        %div.content
+            %div.column-100
                 %h1.heading.-flourish.-giant.no-white-space
                     Farrah Brink
-                %header
-                    %nav
+        %div.header__nav-wrapper.js-sticky-nav-wrapper
+            %nav.header__nav.js-sticky-nav
+                %div.content
+                    %div.column-100
                         %ul
                             %li
                                 %a.js-scroll-link{ :href => '#about' }
@@ -68,6 +81,7 @@
                             %li
                                 %a.js-scroll-link{ :href => '#skills' }
                                     Skills
+    %div.resume
         %section#about.resume__section
             %div.content
                 %div.column-100
