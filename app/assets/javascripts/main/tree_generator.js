@@ -24,6 +24,9 @@ function Tree ( canvasId, type, config ) {
     this.limbs = [  ];
     this.twigs = [  ];
     
+    this.activeBranches = [  ];
+    this.queuedBranches = [  ];
+    
     this.canvas = {
         $element: $( '#' + canvasId ),
         context2d: $( '#' + canvasId )[ 0 ].getContext( '2d' ),
@@ -35,7 +38,8 @@ function Tree ( canvasId, type, config ) {
     
     if ( this.type == 'birch' ) {
         type_config = {
-            branchColor: '#eeeeee',
+            branchColors: [ '#eeeeee', '#eeeeee', '#eeeeee', '#cccccc' ],
+            leaderSplitRange: 0.70,
             leafColors: [ '#669900', '#99cc00', '#ddee99' ], 
             limbAngleLimit: Math.PI / 3.0,
             maxLeaderLimbs: 10,
@@ -44,15 +48,17 @@ function Tree ( canvasId, type, config ) {
         }
     } else if ( this.type == 'cherry' ) {
         type_config = {
-            branchColor: '#332222',
+            branchColors: [ '#332222' ],
             leafColors: [ '#ffffff', '#ff3399', '#ffcccc', '#ff6699' ], 
             limbAngleLimit: Math.PI / 2.0,
             wiggle: 1
         }
     } else if ( this.type == 'willow' ) {
         type_config = {
-            branchColor: '#444444',
+            branchColors: [ '#444444' ],
+            leaderSplitRange: 0.80,
             leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
+            maxActiveBranches: 25,
             twigShape: 'cubic',
             wiggle: 0.5
         }
@@ -68,6 +74,8 @@ function Tree ( canvasId, type, config ) {
     // grass: should this tree be in grass?
     // initialWidth: starting width of the leader.
     // leaderHeight: height of the leader in proportion to the canvas height.
+    // leaderSplitRange: proportion of the leader, from the top down, on which 
+    // branches can grow.
     // leafColors: possible leaf colors.
     // leaves: should this tree grow leaves?
     // limbAngleLimit: greatest angle that a limb can originally deviate from 
@@ -87,14 +95,16 @@ function Tree ( canvasId, type, config ) {
     this.config = $.extend( {
         avgNumLeaderBranches: 15, 
         baseGrowthRate: 3, 
-        branchColor: '#444444',
+        branchColors: [ '#444444', '#555555' ],
         branchWidth: 0.80,
         grass: true,
         initialWidth: 30, 
         leaderHeight: 0.95, 
+        leaderSplitRange: 0.75, 
         leafColors: [ '#009933', '#33cc33', '#66ff33' ], 
         leaves: true,
         limbAngleLimit: 4.0 * Math.PI / 9.0,
+        maxActiveBranches: 50,
         maxLeaderLimbs: 15,
         maxLimbLimbs: 2,
         maxSproutTime: 10,
@@ -170,8 +180,10 @@ function Branch ( level, generator, parent, width, x, y ) {
     // width: width tracker.
     // x: x-position tracker.
     // xOrigin: the starting x-position.
+    // xPrev: the previous x-position.
     // y: y-position tracker.
     // yOrigin: the starting y-position.
+    // yPrev: the previous y-position.
     
     this.level = level;
     this.lifetime = 0;
@@ -181,8 +193,10 @@ function Branch ( level, generator, parent, width, x, y ) {
     this.width = width;
     this.x = x;
     this.xOrigin = x;
+    this.xPrev = x;
     this.y = y;
     this.yOrigin = y;
+    this.yPrev = y;
     
     // DEFAULTS: these values should overwritten by subclasses if ever used.
     // but because these are used in Branch prototype functions, defaults are
@@ -216,7 +230,6 @@ Branch.prototype.continueGrowth = function (  ) {
     
     // if the width is still distinguishable, continue this branch.
     if ( this.width >= 1 ) {
-        
         var self = this;
         
         this.guide(  );
@@ -224,6 +237,16 @@ Branch.prototype.continueGrowth = function (  ) {
         setTimeout( function (  ) {
 			      self.grow(  );
 		    }, this.growthRate );
+    } else {
+        var activeIndex = this.generator.activeBranches.indexOf( this );
+        
+        if ( activeIndex != -1 ) {
+            this.generator.activeBranches.splice( activeIndex, 1 );
+            
+            if ( this.generator.queuedBranches.length > 0 ) {
+                this.generator.queuedBranches[ 0 ].start(  );
+            }
+        }
     }
 }
 
@@ -277,16 +300,18 @@ Branch.prototype.grow = function(  ) {
             this.generator.canvas.context2d.globalCompositeOperation = 'destination-over';
         }
         
+        this.generator.canvas.context2d.strokeStyle = this.generator.config.branchColors[ Math.floor( Math.random(  ) * this.generator.config.branchColors.length ) ];
         this.generator.canvas.context2d.lineWidth = this.width;
         this.generator.canvas.context2d.beginPath(  );
-        this.generator.canvas.context2d.moveTo( this.x, this.y );
+        this.generator.canvas.context2d.moveTo( this.xPrev, this.yPrev );
         
         this.lifetime = this.lifetime + 1;
         this.width = this.width - this.loss;
+        this.xPrev = this.x;
+        this.yPrev = this.y;
         this.x = this.x + this.dx;
         this.y = this.y + this.dy;
         
-        this.generator.canvas.context2d.strokeStyle = this.generator.config.branchColor;
         this.generator.canvas.context2d.lineTo( this.x, this.y );
         this.generator.canvas.context2d.stroke(  );
         this.generator.canvas.context2d.globalCompositeOperation = 'source-over';
@@ -309,7 +334,7 @@ Branch.prototype.guide = function (  ) {
     this.dy = 0;
 }
 
-Branch.prototype.split = function(  ) {
+Branch.prototype.split = function (  ) {
     
     if ( this.limbs.length < this.maxLimbs ) {
         if ( Math.random(  ) < this.twigThresh(  ) ) {
@@ -319,6 +344,29 @@ Branch.prototype.split = function(  ) {
         }
     } else {
         this.generateTwig(  );
+    }
+}
+
+Branch.prototype.start = function (  ) {
+    
+    var activeIndex = this.generator.activeBranches.indexOf( this );
+    var queuedIndex = this.generator.queuedBranches.indexOf( this );
+    var self = this;
+    
+    if ( this.generator.activeBranches.length < this.generator.config.maxActiveBranches ) {
+        if ( queuedIndex != -1 ) {
+            this.generator.queuedBranches.splice( queuedIndex, 1 );
+        }
+        
+        if ( activeIndex == -1 ) {
+            this.generator.activeBranches.push( this );
+            
+            setTimeout( function(  ) {
+                self.grow(  );
+            }, Math.random(  ) * this.generator.config.maxSproutTime );
+        }
+    } else if ( queuedIndex == -1 ) {
+        this.generator.queuedBranches.push( this );
     }
 }
 
@@ -337,7 +385,8 @@ function Leader ( level, generator, parent, width, x, y ) {
     // maxLimbs: maximum number of limbs.
     // postLimbWidth: see Branch.
     // splitThresh: chance the branch will split into a new branch. calculated 
-    // here with this.splitThresh * ( 3 / 4 ) * this.expectedLifetime = this.generator.config.avgNumLeaderBranches
+    // here with this.splitThresh * this.generator.config.splitRange * 
+    // this.expectedLifetime = this.generator.config.avgNumLeaderBranches
     
     this.dx = 0;
     this.dy = 3;
@@ -346,14 +395,16 @@ function Leader ( level, generator, parent, width, x, y ) {
     this.loss = ( this.generator.config.initialWidth - 1 ) / this.expectedLifetime;
     this.maxLimbs = this.generator.config.maxLeaderLimbs;
     this.postLimbWidth = 1.00;
-    this.splitThresh = ( 4 / 3 ) * ( this.generator.config.avgNumLeaderBranches / this.expectedLifetime );
+    this.splitThresh = ( 1 / this.generator.config.leaderSplitRange ) * ( this.generator.config.avgNumLeaderBranches / this.expectedLifetime );
     
+    // the leader must immediately become an active branch, no exceptions.
+    this.generator.activeBranches.push( this );
     this.grow(  );
 }
 
 Leader.prototype.canSplit = function (  ) {
     
-    var splittable = ( this.lifetime / this.expectedLifetime ) > ( 1 / 4 ) &&
+    var splittable = ( this.lifetime / this.expectedLifetime ) > ( 1 - this.generator.config.leaderSplitRange ) &&
       Math.random(  ) < this.splitThresh;
     
     return( splittable );
@@ -387,7 +438,7 @@ function Leaf ( generator, parent, radius, x, y ) {
     var self = this;
     
     setTimeout( function(  ) {
-      self.grow(  );
+        self.grow(  );
     }, 500 );
 }
 
@@ -433,11 +484,7 @@ function Limb ( level, generator, parent, width, x, y ) {
     this.postLimbWidth = 0.80;
     this.splitThresh = this.parent.splitThresh * ( 5 / 4 );
     
-    var self = this;
-    
-    setTimeout( function(  ) {
-        self.grow(  );
-    }, Math.random(  ) * this.generator.config.maxSproutTime );
+    this.start(  );
 }
 
 Limb.prototype.canSplit = function (  ) {
@@ -457,10 +504,19 @@ Limb.prototype.continueGrowth = function (  ) {
         }, this.growthRate );
     // terminate in a small twig.
     } else {
+        var activeIndex = this.generator.activeBranches.indexOf( this );
         var childTwig = new Twig( this.level + 1, this.generator, this, this.width, this.x, this.y );
         
         this.twigs.push( childTwig );
         this.generator.twigs.push( childTwig );
+        
+        if ( activeIndex != -1 ) {
+            this.generator.activeBranches.splice( activeIndex, 1 );
+            
+            if ( this.generator.queuedBranches.length > 0 ) {
+                this.generator.queuedBranches[ 0 ].start(  );
+            }
+        }
     }
 }
 
@@ -530,11 +586,7 @@ function Twig ( level, generator, parent, width, x, y ) {
         this.width = 0;
     }
     
-    var self = this;
-        
-    setTimeout( function(  ) {
-        self.grow(  );
-    }, Math.random(  ) * this.generator.config.maxSproutTime );
+    this.start(  );
 }
 
 Twig.prototype.canLeaf = function (  ) {

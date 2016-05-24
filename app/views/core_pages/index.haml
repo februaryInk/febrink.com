@@ -4,6 +4,7 @@
     :plain
         var coverLetterHeight = 0;
         var headerHeight = 0;
+        var tree;
         
         $( document ).ready( function(  ) {
         
@@ -41,7 +42,7 @@
                 $( '#tree-canvas' )[ 0 ].height = $( '#tree-canvas' ).parent(  ).height(  );
                 $( '#tree-canvas' )[ 0 ].width = $( '#tree-canvas' ).parent(  ).width(  );
                 
-                var tree = new Tree( 'tree-canvas', 'willow', {  
+                tree = new Tree( 'tree-canvas', 'willow', {  
                     leaderHeight: 0.99
                 } );
                 tree.grow(  );

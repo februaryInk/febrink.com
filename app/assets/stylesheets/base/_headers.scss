@@ -1,11 +1,7 @@
 header {
     background-color: $color-white;
-    padding-top: 4em;
+    padding-top: 2em;
     width: 100%;
-    
-    @media ( max-width: 42em ) {
-        padding-top: 2em;
-    }
 }
 
 .header__nav {
