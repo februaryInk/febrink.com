@@ -3,9 +3,9 @@
     
     margin-left: auto;
     margin-right: auto;
-    width: 40em;
+    width: $size-content;
     
-    @media ( max-width: 42em ) {
+    @media ( max-width: #{$size-content} ) {
         width: 95%;
     }
 }

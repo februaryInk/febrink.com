@@ -1,5 +1,3 @@
-- content_for( :title ) { 'Welcome' }
-
 %script{ :type => 'text/javascript' }
     :plain
         var coverLetterHeight = 0;
@@ -30,7 +28,7 @@
             }
             
             $( '.js-cover-letter' ).height( coverLetterHeight );
-            $( '.js-peek-over' ).css( 'margin-top', coverLetterHeight );
+            $( '.js-cover-letter-window' ).height( coverLetterHeight );
             
             if ( $( '#tree-canvas' ).length ) {
                 
@@ -42,8 +40,9 @@
                 $( '#tree-canvas' )[ 0 ].height = $( '#tree-canvas' ).parent(  ).height(  );
                 $( '#tree-canvas' )[ 0 ].width = $( '#tree-canvas' ).parent(  ).width(  );
                 
-                tree = new Tree( 'tree-canvas', 'willow', {  
-                    leaderHeight: 0.99
+                tree = new Tree( 'tree-canvas', 'birch', {  
+                    leaderHeight: 0.99,
+                    xOrigin: ( 3 / 4 ) * $( '#tree-canvas' )[ 0 ].width
                 } );
                 tree.grow(  );
             }
@@ -60,11 +59,14 @@
 %main
     %div.cover-letter.js-cover-letter
         %canvas#tree-canvas
-    %header.js-peek-over
+    %div.js-cover-letter-window
         %div.content
-            %div.column-100
-                %h1.heading.-flourish.-giant.no-white-space
-                    Farrah Brink
+            %div.cover-letter-window__content
+                %h1.heading.-flourish.-grand.no-white-space
+                    Welcome.
+                %p
+                    I'm Farrah Brink. I come from West Michigan and work in web development.
+    %header.js-peek-over
         %div.header__nav-wrapper.js-sticky-nav-wrapper
             %nav.header__nav.js-sticky-nav
                 %div.content
@@ -87,10 +89,10 @@
             %div.content
                 %div.column-100
                     %h2.heading.-flourish.-grand
-                        Hello
+                        About Me
                     %hr.margin-b3
                     %p
-                        Welcome to febrink.com, the personal site of Farrah Brink (that's me!). I learned programming while earning my undergraduate degree in physics, partly from coursework but mostly from my own studies. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript.
+                        Welcome. My name is Farrah Brink. I learned programming while earning my undergraduate degree in physics, partly from coursework but mostly from my own studies. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript.
                     %div.centered
                         %div.icons
                             %div.icon
