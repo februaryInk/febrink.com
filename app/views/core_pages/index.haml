@@ -3,6 +3,7 @@
         var coverLetterHeight = 0;
         var headerHeight = 0;
         var tree;
+        var type = [ 'birch', 'cherry', 'willow' ][ Math.floor( Math.random(  ) * 3 ) ];
         
         $( document ).ready( function(  ) {
         
@@ -40,7 +41,7 @@
                 $( '#tree-canvas' )[ 0 ].height = $( '#tree-canvas' ).parent(  ).height(  );
                 $( '#tree-canvas' )[ 0 ].width = $( '#tree-canvas' ).parent(  ).width(  );
                 
-                tree = new Tree( 'tree-canvas', 'birch', {  
+                tree = new Tree( 'tree-canvas', type, {  
                     leaderHeight: 0.99,
                     xOrigin: ( 3 / 4 ) * $( '#tree-canvas' )[ 0 ].width
                 } );
@@ -92,7 +93,7 @@
                         About Me
                     %hr.margin-b3
                     %p
-                        Welcome. My name is Farrah Brink. I learned programming while earning my undergraduate degree in physics, partly from coursework but mostly from my own studies. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript.
+                        I learned programming while earning my undergraduate degree in physics, partly from coursework but mostly from my own studies. Since graduation, I have been working as a professional web developer. Over the past few years, I have become very familiar with Ruby, Rails, HTML, CSS, and JavaScript.
                     %div.centered
                         %div.icons
                             %div.icon

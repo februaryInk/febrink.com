@@ -39,8 +39,9 @@ function Tree ( canvasId, type, config ) {
     if ( this.type == 'birch' ) {
         type_config = {
             branchColors: [ '#eeeeee', '#eeeeee', '#eeeeee', '#cccccc' ],
+            canvasColor: '#bbcc99',
             leaderSplitRange: 0.70,
-            leafColors: [ '#669900', '#99cc00', '#ddee99' ], 
+            leafColors: [ '#669900', '#99cc11', '#ddeeaa', '#88bb55' ], 
             limbAngleLimit: Math.PI / 3.0,
             maxLeaderLimbs: 10,
             twigLeafThresh: 0.50,
@@ -48,14 +49,19 @@ function Tree ( canvasId, type, config ) {
         }
     } else if ( this.type == 'cherry' ) {
         type_config = {
-            branchColors: [ '#332222' ],
-            leafColors: [ '#ffffff', '#ff3399', '#ffcccc', '#ff6699' ], 
+            branchColors: [ '#554444' ],
+            canvasColor: '#ffddee',
+            leafColors: [ '#ffffff', '#ff3399', '#ffcccc', '#ff6699' ],
+            leafFlex: 4, 
             limbAngleLimit: Math.PI / 2.0,
+            limbSplitThreshRatio: 3.0 / 2.0,
+            twigLeafThresh: 1.0,
             wiggle: 1
         }
     } else if ( this.type == 'willow' ) {
         type_config = {
             branchColors: [ '#444444' ],
+            canvasColor: '#ccddee',
             leaderSplitRange: 0.80,
             leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
             maxActiveBranches: 25,
@@ -71,15 +77,19 @@ function Tree ( canvasId, type, config ) {
     // slower overall growth.
     // branchColor: branch color.
     // branchWidth: width of a branch in proportion to its parent.
+    // canvasColor: canvas color.
     // grass: should this tree be in grass?
     // initialWidth: starting width of the leader.
     // leaderHeight: height of the leader in proportion to the canvas height.
     // leaderSplitRange: proportion of the leader, from the top down, on which 
     // branches can grow.
     // leafColors: possible leaf colors.
+    // leafFlex: number of diameters a leaf can deviate from its parent branch.
     // leaves: should this tree grow leaves?
     // limbAngleLimit: greatest angle that a limb can originally deviate from 
     // its parent's angle.
+    // limbSplitThreshRatio: chance that limbs will split in proportion to the
+    // chance of their parent splitting.
     // maxLeaderLimbs: maximum number of limbs that can grow off the leader.
     // maxLimbLimbs: maximum number of limbs that can grow off a limb.
     // maxSproutTime: maximum time that can pass between the initial generation 
@@ -95,15 +105,18 @@ function Tree ( canvasId, type, config ) {
     this.config = $.extend( {
         avgNumLeaderBranches: 15, 
         baseGrowthRate: 3, 
-        branchColors: [ '#444444', '#555555' ],
+        branchColors: [ '#664444' ],
         branchWidth: 0.80,
+        canvasColor: '#aaddff',
         grass: true,
         initialWidth: 30, 
         leaderHeight: 0.95, 
         leaderSplitRange: 0.75, 
         leafColors: [ '#009933', '#33cc33', '#66ff33' ], 
+        leafFlex: 3,
         leaves: true,
         limbAngleLimit: 4.0 * Math.PI / 9.0,
+        limbSplitThreshRatio: 5.0 / 4.0,
         maxActiveBranches: 50,
         maxLeaderLimbs: 15,
         maxLimbLimbs: 2,
@@ -114,6 +127,8 @@ function Tree ( canvasId, type, config ) {
         xOrigin: this.canvas.width / 2,
         yOrigin: this.canvas.height, 
     }, type_config, config );
+    
+    this.canvas.$element.css( 'background-color', this.config.canvasColor );
     
     if ( this.config.grass ) {
         var bladeHeight;
@@ -253,7 +268,7 @@ Branch.prototype.continueGrowth = function (  ) {
 Branch.prototype.generateLeaf = function (  ) {
     
     if ( this.generator.config.leaves ) {
-        var flex = this.width * 3;
+        var flex = this.width * this.generator.config.leafFlex;
         var angle = Math.atan2( this.dy, this.dx );
         var flexX = flex * Math.abs( Math.sin( angle ) );
         var flexY = flex * Math.abs( Math.cos( angle ) );
@@ -482,7 +497,7 @@ function Limb ( level, generator, parent, width, x, y ) {
     this.loss = ( level <= 1 ? this.parent.loss * this.generator.config.branchWidth : this.parent.parent.loss / this.generator.config.branchWidth );
     this.maxLimbs = ( level <= 1 ? this.generator.config.maxLimbLimbs : 0 );
     this.postLimbWidth = 0.80;
-    this.splitThresh = this.parent.splitThresh * ( 5 / 4 );
+    this.splitThresh = this.parent.splitThresh * this.generator.config.limbSplitThreshRatio;
     
     this.start(  );
 }
