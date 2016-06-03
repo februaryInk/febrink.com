@@ -13,9 +13,10 @@ class Application < Sinatra::Base
   
   register Sinatra::Contrib
   
-  assets.append_path( 'app/assets/stylesheets' )
-  assets.append_path( 'app/assets/javascripts' )
   assets.append_path( 'app/assets/fonts' )
+  assets.append_path( 'app/assets/images' )
+  assets.append_path( 'app/assets/javascripts' )
+  assets.append_path( 'app/assets/stylesheets' )
   
   assets.css_compressor = :scss
   

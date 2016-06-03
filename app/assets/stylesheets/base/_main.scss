@@ -5,11 +5,12 @@
 @import 'base/reset.scss';
 
 @import 'base/footers.scss';
-@import 'base/global_modifiers.scss';
 @import 'base/grid.scss';
 @import 'base/headers.scss';
 @import 'base/layout_elements.scss';
 @import 'base/typography.scss';
+
+@import 'base/global_modifiers.scss';
 
 * {
     box-sizing: border-box;
@@ -59,6 +60,11 @@ html {
     margin-bottom: 1em;
     margin-left: auto;
     margin-right: auto;
+}
+
+.project-image {
+    border: 0.25em solid $color-gainsboro;
+    width: 100%;
 }
 
 .resume {

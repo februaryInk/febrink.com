@@ -14,6 +14,7 @@ a.full-width, input[type=submit].full-width { display: block; text-align: center
 .margin-b0 { margin-bottom: 0; }
 .margin-b0p5 { margin-bottom: 0.5; }
 .margin-b1 { margin-bottom: 1em; }
+.margin-b2 { margin-bottom: 2em; }
 .margin-b3 { margin-bottom: 3em; }
 
 .margin-l1 { margin-left: 1em; }
@@ -25,3 +26,7 @@ a.full-width, input[type=submit].full-width { display: block; text-align: center
 .no-white-space { line-height: 1em; margin: 0; padding: 0; }
 
 .padding-b1 { margin-bottom: 1em; }
+
+.padding-l2 { padding-left: 2em; }
+
+.padding-r2 { padding-right: 2em; }

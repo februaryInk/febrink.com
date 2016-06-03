@@ -85,6 +85,9 @@
                             %li
                                 %a.js-scroll-link{ :href => '#skills' }
                                     Skills
+                            %li
+                                %a.js-scroll-link{ :href => '#projects' }
+                                    Projects
     %div.resume
         %section#about.resume__section
             %div.content
@@ -161,10 +164,40 @@
                         %li
                             Knowledge of Ruby, CSS/SCSS, HTML/HAML, JavaScript/jQuery.
                         %li
-                            Experience with the Ruby on Rails web application framework.
+                            Proficient with the Ruby on Rails web application framework.
                         %li
                             Experience with Git and version control.
                         %li
                             Modest experience with Amazon Web Services, Heroku, and server setup.
                         %li
                             Modest knowledge of Java and Python.
+        %section#projects.resume__section
+            %div.content
+                %div.column-100
+                    %h2.heading.-flourish.-grand
+                        Projects
+                    %hr.margin-b3
+                %div.column-100.margin-b2
+                    %p
+                        Many of the projects I have worked on are privately owned, but I also have a few personal projects that I work on in my own time.
+                %div.column-100.-stripped.margin-b3
+                    %div.column-50.padding-r2
+                        %img.project-image{ :src => 'assets/inklings.jpg' }
+                    %div.column-50.padding-l2
+                        %h3.heading.-medium
+                            Inklings
+                        %p
+                            Inklings is a Rails side project that I have been adding to little by little for quite a while. The site's concept is a writer's community where people can come to discuss their works in progress, but ultimately it provides a way for me to practice and think about design, usability, testing, and code organization, among other things.
+                        %div.centered
+                            %div.icons
+                                %div.icon
+                                    %a{ :href => 'https://github.com/februaryInk/social-networking-website', :target => '_blank' }
+                                        = erb :'core_pages/_github_icon'
+                %div.column-100.-stripped
+                    %div.column-50.padding-r2
+                        %img.project-image{ :src => 'assets/zombies.jpg' }
+                    %div.column-50.padding-l2
+                        %h3.heading.-medium
+                            Zombies
+                        %p
+                            Zombies is an Android game developed with Java in which the player needs to survive in an endless labyrinth filled with (you guessed it) zombies. It's a collaborative project that I am assisting with as co-developer.
