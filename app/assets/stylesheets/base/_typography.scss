@@ -56,6 +56,10 @@ em, i { font-style: italic; }
     &.-giant { font-size: 64px; }
 }
 
+.outline-birch { @include text-outline( $color-sprout, 3 ); }
+.outline-cherry { @include text-outline( $color-lavender-blush, 3 ); }
+.outline-willow { @include text-outline( $color-pattens-blue, 3 ); }
+
 .t-fine { font-size: 16px; }
 .t-medium { font-size: 18px; }
 .t-large { font-size: 20px; }

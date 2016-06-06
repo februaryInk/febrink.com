@@ -43,9 +43,36 @@ html {
 }
 
 .cover-letter-window__content {
-    margin-top: 50%;
     max-width: 30em;
     position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.cover-letter-switch {
+    border: 3px solid transparent;
+    border-radius: 1em;
+    cursor: pointer;
+    display: inline-block;
+    height: 2em;
+    margin-right: 0.75em;
+    width: 2em;
+    
+    &.-birch {
+        background-color: darken( $color-sprout, 10% );
+    }
+    
+    &.-cherry {
+        background-color: darken( $color-lavender-blush, 5% );
+    }
+    
+    &.-open {
+        border-color: $color-charcoal;
+    }
+    
+    &.-willow {
+        background-color: darken( $color-pattens-blue, 5% );
+    }
 }
 
 .icon {

@@ -14,14 +14,33 @@
                 $( 'body, html' ).animate( { scrollTop: elementPosition }, 750 );
             } );
             
+            $( document ).on( 'click', '.js-cover-letter-switch', function(  ) {
+                type = $( this ).data( 'tree-type' );
+                
+                setCoverLetterColor(  );
+                prepareCoverLetter(  );
+            } );
+            
+            setCoverLetterColor(  );
             prepareCoverLetter(  );
         } );
         
-        $( window ).resize( function(  ) {
+        $( window ).resize( function (  ) {
             prepareCoverLetter(  );
         } );
         
-        var prepareCoverLetter = function(  ) {
+        var setCoverLetterColor = function (  ) {
+            $( '.js-cover-letter-switch' ).removeClass( '-open' );
+            $( '.js-cover-letter-switch[ data-tree-type="' + type + '" ]' ).addClass( '-open' );
+            
+            $( '.js-outlined-text' )
+                .removeClass( 'outline-birch' )
+                .removeClass( 'outline-cherry' )
+                .removeClass( 'outline-willow' )
+                .addClass( 'outline-' + type );
+        }
+        
+        var prepareCoverLetter = function (  ) {
             coverLetterHeight = window.innerHeight - $( '.js-peek-over' ).outerHeight(  );
             
             if ( coverLetterHeight < 0 ) {
@@ -61,12 +80,16 @@
     %div.cover-letter.js-cover-letter
         %canvas#tree-canvas
     %div.js-cover-letter-window
-        %div.content
+        %div.content.full-height
             %div.cover-letter-window__content
-                %h1.heading.-flourish.-grand.no-white-space
+                %h1.heading.-flourish.-grand.js-outlined-text.no-white-space
                     Welcome.
-                %p
+                %p.js-outlined-text
                     I'm Farrah Brink. I come from West Michigan and work in web development.
+                %div
+                    %span.cover-letter-switch.-birch.js-cover-letter-switch{ 'data-tree-type' => 'birch' }
+                    %span.cover-letter-switch.-cherry.js-cover-letter-switch{ 'data-tree-type' => 'cherry' }
+                    %span.cover-letter-switch.-willow.js-cover-letter-switch{ 'data-tree-type' => 'willow' }
     %header.js-peek-over
         %div.header__nav-wrapper.js-sticky-nav-wrapper
             %nav.header__nav.js-sticky-nav
