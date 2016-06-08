@@ -23,21 +23,63 @@
             
             setCoverLetterColor(  );
             prepareCoverLetter(  );
+            
+            setTimeout( function(  ) {
+                repeatedlyEmphasizeSwitches(  );
+            }, 2000 );
         } );
         
         $( window ).resize( function (  ) {
             prepareCoverLetter(  );
         } );
         
-        var setCoverLetterColor = function (  ) {
-            $( '.js-cover-letter-switch' ).removeClass( '-open' );
-            $( '.js-cover-letter-switch[ data-tree-type="' + type + '" ]' ).addClass( '-open' );
+        var emphasizeSwitches = function (  ) {
+            var $switches = $( '.js-cover-letter-switch' );
             
-            $( '.js-outlined-text' )
-                .removeClass( 'outline-birch' )
-                .removeClass( 'outline-cherry' )
-                .removeClass( 'outline-willow' )
-                .addClass( 'outline-' + type );
+            // assuming all switches are the same size.
+            var switchHeight = $switches.outerHeight(  );
+            var switchWidth = $switches.outerWidth(  );
+            
+            animateInSequence( '.js-cover-letter-switch', 
+                [ { 
+                    borderTopLeftRadius: 0.625 * switchHeight,
+                    borderTopRightRadius: 0.625 * switchHeight,
+                    borderBottomRightRadius: 0.625 * switchHeight,
+                    borderBottomLeftRadius: 0.625 * switchHeight,
+                    height: 1.25 * switchHeight, 
+                    marginLeft: '-=' + 0.125 * switchWidth,
+                    marginRight: '-=' + 0.125 * switchWidth,
+                    marginTop: '-=' + 0.125 * switchHeight,
+                    width: 1.25 * switchWidth 
+                },
+                { 
+                    borderTopLeftRadius: 0.45 * switchHeight,
+                    borderTopRightRadius: 0.45 * switchHeight,
+                    borderBottomRightRadius: 0.45 * switchHeight,
+                    borderBottomLeftRadius: 0.45 * switchHeight,
+                    height: 0.9 * switchHeight, 
+                    marginLeft: '+=' + 0.175 * switchWidth,
+                    marginRight: '+=' + 0.175 * switchWidth,
+                    marginTop: '+=' + 0.175 * switchHeight,
+                    width: 0.9 * switchWidth
+                },
+                { 
+                    borderTopLeftRadius: 0.5 * switchHeight,
+                    borderTopRightRadius: 0.5 * switchHeight,
+                    borderBottomRightRadius: 0.5 * switchHeight,
+                    borderBottomLeftRadius: 0.5 * switchHeight,
+                    height: switchHeight, 
+                    marginLeft: '-=' + 0.05 * switchWidth,
+                    marginRight: '-=' + 0.05 * switchWidth,
+                    marginTop: '-=' + 0.05 * switchHeight,
+                    width: switchWidth
+                } ],
+                [
+                    100,
+                    100,
+                    100
+                ]
+            );
         }
         
         var prepareCoverLetter = function (  ) {
@@ -68,6 +110,24 @@
             }
         }
         
+        var repeatedlyEmphasizeSwitches = function (  ) {
+            emphasizeSwitches(  );
+            setTimeout( function (  ) {
+                repeatedlyEmphasizeSwitches(  );
+            }, 10000 );
+        }
+        
+        var setCoverLetterColor = function (  ) {
+            $( '.js-cover-letter-switch' ).removeClass( '-open' );
+            $( '.js-cover-letter-switch[ data-tree-type="' + type + '" ]' ).addClass( '-open' );
+            
+            $( '.js-outlined-text' )
+                .removeClass( 'outline-birch' )
+                .removeClass( 'outline-cherry' )
+                .removeClass( 'outline-willow' )
+                .addClass( 'outline-' + type );
+        }
+        
         $( window ).scroll( function(  ) {
             if ( $( this ).scrollTop(  ) > $( '.js-sticky-nav-wrapper' ).offset(  ).top ) {
                 $( '.js-sticky-nav' ).addClass( '-sticky' );
@@ -81,15 +141,16 @@
         %canvas#tree-canvas
     %div.js-cover-letter-window
         %div.content.full-height
-            %div.cover-letter-window__content
-                %h1.heading.-flourish.-grand.js-outlined-text.no-white-space
-                    Welcome.
-                %p.js-outlined-text
-                    I'm Farrah Brink. I come from West Michigan and work in web development.
-                %div
-                    %span.cover-letter-switch.-birch.js-cover-letter-switch{ 'data-tree-type' => 'birch' }
-                    %span.cover-letter-switch.-cherry.js-cover-letter-switch{ 'data-tree-type' => 'cherry' }
-                    %span.cover-letter-switch.-willow.js-cover-letter-switch{ 'data-tree-type' => 'willow' }
+            %div.column-100.full-height
+                %div.cover-letter-window__content
+                    %h1.heading.-flourish.-grand.js-outlined-text.no-white-space
+                        Welcome.
+                    %p.js-outlined-text
+                        I'm Farrah Brink. I come from West Michigan and work in web development.
+                    %div.cover-letter-switches
+                        %div.cover-letter-switch.-birch.js-cover-letter-switch{ 'data-tree-type' => 'birch' }
+                        %div.cover-letter-switch.-cherry.js-cover-letter-switch{ 'data-tree-type' => 'cherry' }
+                        %div.cover-letter-switch.-willow.js-cover-letter-switch{ 'data-tree-type' => 'willow' }
     %header.js-peek-over
         %div.header__nav-wrapper.js-sticky-nav-wrapper
             %nav.header__nav.js-sticky-nav

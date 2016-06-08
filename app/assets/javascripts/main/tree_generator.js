@@ -63,7 +63,7 @@ function Tree ( canvasId, type, config ) {
             branchColors: [ '#444444' ],
             canvasColor: '#ccddee',
             leaderSplitRange: 0.80,
-            leafColors: [ '#ffffff', '#3366cc', '#6600cc', '#6699ff' ], 
+            leafColors: [ '#ffffff', '#3366cc', '#5500bb', '#7799ff' ], 
             maxActiveBranches: 25,
             twigShape: 'cubic',
             wiggle: 0.5
@@ -79,6 +79,7 @@ function Tree ( canvasId, type, config ) {
     // branchWidth: width of a branch in proportion to its parent.
     // canvasColor: canvas color.
     // grass: should this tree be in grass?
+    // growthSegmentLength: approximate length branches grow per iteration.
     // initialWidth: starting width of the leader.
     // leaderHeight: height of the leader in proportion to the canvas height.
     // leaderSplitRange: proportion of the leader, from the top down, on which 
@@ -109,6 +110,7 @@ function Tree ( canvasId, type, config ) {
         branchWidth: 0.80,
         canvasColor: '#aaddff',
         grass: true,
+        growthSegmentLength: 3,
         initialWidth: 30, 
         leaderHeight: 0.95, 
         leaderSplitRange: 0.75, 
@@ -221,8 +223,8 @@ function Branch ( level, generator, parent, width, x, y ) {
     // dy: change in y-position for the next growth iteration.
     // growthRate: delay between each growth iteration for this branch.
     // loss: width taken off per growth iteration.
-    // postLimb: width after generating a limb in proportion to this branch's 
-    // previous width.
+    // postLimbWidth: width after generating a limb in proportion to this 
+    // branch's previous width.
     
     this.dx = 0;
     this.dy = 0;
@@ -404,9 +406,9 @@ function Leader ( level, generator, parent, width, x, y ) {
     // this.expectedLifetime = this.generator.config.avgNumLeaderBranches
     
     this.dx = 0;
-    this.dy = 3;
+    this.dy = -1 * this.generator.config.growthSegmentLength;
     this.growthRate = this.generator.config.baseGrowthRate;
-    this.expectedLifetime = ( ( this.generator.config.leaderHeight * this.generator.canvas.height ) / this.dy );
+    this.expectedLifetime = ( ( this.generator.config.leaderHeight * this.generator.canvas.height ) / this.generator.config.growthSegmentLength );
     this.loss = ( this.generator.config.initialWidth - 1 ) / this.expectedLifetime;
     this.maxLimbs = this.generator.config.maxLeaderLimbs;
     this.postLimbWidth = 1.00;
@@ -428,7 +430,7 @@ Leader.prototype.canSplit = function (  ) {
 Leader.prototype.guide = function(  ) {
     
     this.dx = this.dx + Math.sin( Math.random(  ) + this.lifetime ) * ( ( 1 / 2 ) * this.generator.config.wiggle );
-    this.dy = -3;
+    this.dy = -1 * this.generator.config.growthSegmentLength;
 }
 
 Leader.prototype.twigThresh = function (  ) {
@@ -490,11 +492,10 @@ function Limb ( level, generator, parent, width, x, y ) {
     var parentAngle = Math.atan2( this.parent.dy, this.parent.dx );
     var angle = Math.random(  ) * ( ( parentAngle + limitingAngle ) - ( parentAngle - limitingAngle ) ) + ( parentAngle - limitingAngle );
     
-    this.dx = 3 * Math.cos( angle );
-    this.dy = 3 * Math.sin( angle );
+    this.dx = this.generator.config.growthSegmentLength * Math.cos( angle );
+    this.dy = this.generator.config.growthSegmentLength * Math.sin( angle );
     this.growthRate = this.generator.config.baseGrowthRate;
-    // TODO: Inversely relate this to wiggle, since wiggle affects limb length.
-    this.loss = ( level <= 1 ? this.parent.loss * this.generator.config.branchWidth : this.parent.parent.loss / this.generator.config.branchWidth );
+    this.loss = this.generator.leader.loss * this.generator.config.branchWidth;
     this.maxLimbs = ( level <= 1 ? this.generator.config.maxLimbLimbs : 0 );
     this.postLimbWidth = 0.80;
     this.splitThresh = this.parent.splitThresh * this.generator.config.limbSplitThreshRatio;
@@ -508,6 +509,7 @@ Limb.prototype.canSplit = function (  ) {
 }
 
 Limb.prototype.continueGrowth = function (  ) {
+    
     if ( this.width >= 2 ) {
         
         var self = this;
@@ -565,7 +567,7 @@ function Twig ( level, generator, parent, width, x, y ) {
         // ensure the direction of growth is correct.
         var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
         
-        this.dy = 3;
+        this.dy = this.generator.config.growthSegmentLength;
         this.dx = 3 * direction * ( this.dy / Math.abs( this.dy ) ) * Math.pow( Math.abs( this.dy ), 1 / 3 );
         this.loss = this.parent.loss / 2;
         
@@ -588,8 +590,8 @@ function Twig ( level, generator, parent, width, x, y ) {
         var parentAngle = Math.atan2( this.parent.dy, this.parent.dx );
         var angle = Math.random(  ) * ( ( parentAngle + limitingAngle ) - ( parentAngle - limitingAngle ) ) + ( parentAngle - limitingAngle );
     
-        this.dx = 3 * Math.cos( angle );
-        this.dy = 3 * Math.sin( angle );
+        this.dx = this.generator.config.growthSegmentLength * Math.cos( angle );
+        this.dy = this.generator.config.growthSegmentLength * Math.sin( angle );
         this.loss = this.parent.loss;
         
         var maxWidth = this.generator.config.initialWidth / 5;
@@ -624,7 +626,7 @@ Twig.prototype.guide = function(  ) {
         var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
         
         // x = ( y - yOrigin )^( 1 / 3 ) + xOrigin
-        this.dy = 3;
+        this.dy = this.generator.config.growthSegmentLength;
         this.dx = 3 * direction * ( ( ( this.y + this.dy ) - this.yOrigin ) / Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) * ( Math.pow( Math.abs( ( this.y + this.dy ) - this.yOrigin ), 1 / 3 ) - ( ( this.y - this.yOrigin ) / Math.abs( this.y - this.yOrigin ) ) * Math.pow( Math.abs( this.y - this.yOrigin ), 1 / 3 ) );
     } else if ( this.generator.config.twigShape == 'random' ) {
         this.dx = this.dx + Math.sin( Math.random(  ) + this.lifetime ) * this.generator.config.wiggle;

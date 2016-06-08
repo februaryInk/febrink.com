@@ -53,26 +53,40 @@ html {
     border: 3px solid transparent;
     border-radius: 1em;
     cursor: pointer;
-    display: inline-block;
+    float: left;
     height: 2em;
     margin-right: 0.75em;
     width: 2em;
     
     &.-birch {
         background-color: darken( $color-sprout, 10% );
+        
+        &.-open {
+            border-color: $color-olive;
+        }
     }
     
     &.-cherry {
         background-color: darken( $color-lavender-blush, 5% );
-    }
-    
-    &.-open {
-        border-color: $color-charcoal;
+        
+        &.-open {
+            border-color: $color-brilliant-rose;
+        }
     }
     
     &.-willow {
         background-color: darken( $color-pattens-blue, 5% );
+        
+        &.-open {
+            border-color: $color-light-slate-blue;
+        }
     }
+}
+
+.cover-letter-switches {
+    height: 2em;
+    overflow: visible;
+    position: relative;
 }
 
 .icon {
