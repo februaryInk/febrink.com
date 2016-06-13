@@ -1,0 +1,20 @@
+%main.page-content
+    %section
+        %div.content
+            %div.column-100
+                %h1.heading.-medium
+                    Edit Post
+                %form{ :action => "/posts/#{@post.id}", :method => :post }
+                    %input{ :name => '_method', :type => 'hidden', :value => 'patch' }
+                    %div.field
+                        %label{ :for => 'post_title' }
+                            Title
+                        %input#post_title{ :name => 'post[title]', :type => 'text', :value => @post.title }
+                    %div.field
+                        %label{ :for => 'post_body' }
+                            Body
+                        %textarea#post_body{ :name => 'post[body]', :rows => 15 }
+                            = @post.body
+                    %div.buttons
+                        %button.button.-dark.-large{ :type => 'submit' }
+                            Submit

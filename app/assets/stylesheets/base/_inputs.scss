@@ -1,0 +1,29 @@
+select,
+textarea,
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    background-color: $color-white;
+    border: 1px solid $color-nobel;
+    border-radius: 0.25em;
+    height: 2.25em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    width: 100%;
+    
+    &.field-error {
+        border: 1px solid $color-brilliant-rose;
+    }
+}
+
+textarea {
+    height: 5em;
+}
+
+.field {
+    padding-bottom: 16px;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px $color-white inset;
+}

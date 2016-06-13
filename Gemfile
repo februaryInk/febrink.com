@@ -8,6 +8,8 @@ gem 'activerecord'
 
 gem 'autoprefixer-rails'
 
+gem 'bcrypt'
+
 gem 'haml'
 
 gem 'pg'
@@ -24,11 +26,14 @@ gem 'sinatra-redirect-with-flash'
 
 gem 'sprockets'
 
-# gem 'thin'
-
 gem 'tilt', :require => [ 'tilt/erb', 'tilt/haml' ]
 
 gem 'uglifier'
+
+group( :development ) do
+  
+  gem 'tux'
+end
 
 group( :production ) do
     

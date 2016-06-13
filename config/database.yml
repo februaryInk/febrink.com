@@ -1,0 +1,23 @@
+development:
+  adapter: postgresql
+  database: febrink_development
+  encoding: utf8
+  host: localhost
+  password: a#Sw0rd
+  username: postgres
+
+test:
+  adapter: postgresql
+  database: febrink_test
+  encoding: utf8
+  host: localhost
+  password: a#Sw0rd
+  username: postgres
+
+production:
+  adapter: postgresql
+  database: febrink_production
+  encoding: utf8
+  host: localhost
+  password: <%= ENV[ 'DATABASE_PASSWORD' ] %>
+  username: <%= ENV[ 'DATABASE_USERNAME' ] %>

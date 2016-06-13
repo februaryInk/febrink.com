@@ -48,4 +48,6 @@ class Application < Sinatra::Base
   end
 end
 
+require_relative( './environments.rb' )
+require_relative( './app/models/init.rb' )
 require_relative( './app/routes/init.rb' )

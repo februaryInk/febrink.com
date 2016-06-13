@@ -1,0 +1,19 @@
+%main.page-content
+    %section
+        %div.content
+            %div.column-100
+                %h1.heading.-medium
+                    New Post
+                %form{ :action => '/posts', :method => :post, :role => :form }
+                    %div.field
+                        %label{ :for => 'post_title' }
+                            Title
+                        %input#post_title{ :name => 'post[title]', :type => 'text', :value => @post.title }
+                    %div.field
+                        %label{ :for => 'post_body' }
+                            Body
+                        %textarea#post_body{ :name => 'post[body]', :rows => 15 }
+                            = @post.body
+                    %div.buttons
+                        %button.button.-dark.-large{ :type => 'submit' }
+                            Submit

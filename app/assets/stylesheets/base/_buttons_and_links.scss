@@ -1,0 +1,60 @@
+a {
+    text-decoration: none;
+}
+
+.button {
+    @include serif-family;
+    
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 1em;
+    padding: 0.5em 0;
+    position: relative;
+    white-space: nowrap;
+    
+    &:hover {
+        opacity: 0.75;
+    }
+    
+    &.-dark {
+        background-color: $color-charcoal;
+        color: $color-white;
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+    }
+    
+    &.-large {
+        font-size: 20px;
+        padding-bottom: 1em;
+        padding-top: 1em;
+    }
+    
+    &.-left {
+        float: left;
+        margin-right: 8px;
+    }
+    
+    &.-light {
+        background-color: $color-white;
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+    }
+    
+    &.-right {
+        float: right;
+        margin-left: 8px;
+    }
+}
+
+.buttons {
+    overflow: hidden;
+    padding-top: 0.5em;
+    width: 100%;
+    
+    &.-large {
+        padding-top: 1em;
+    }
+}

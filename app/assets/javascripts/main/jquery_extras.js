@@ -1,4 +1,4 @@
-animateInSequence = function ( selector, animations, durations ) {
+var animateInSequence = function ( selector, animations, durations ) {
     
     var $elements = $( selector );
     

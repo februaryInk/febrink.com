@@ -1,0 +1,13 @@
+%main.page-content
+    %section
+        %div.content
+            - if !@posts_by_year.empty?
+                - @years.each do | year |
+                    %div.column-20
+                        %h2
+                            = year
+                    %div.column-80
+                        - @posts_by_year[ year ].each do | post |
+                            %a{ :href => "/posts/#{post.id}" }
+                                %h3
+                                    = post.title

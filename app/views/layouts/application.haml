@@ -6,9 +6,9 @@
         %meta{ :name => 'viewport', :content => 'width=device-width, initial-scale=1' }
         %meta{ :name => 'description', :content => 'Farrah Brink is a web developer who lives in West Michigan. She knows her way around Ruby, Rails, JavaScript, HTML, and CSS.' }
         %link{ :href => 'http://fonts.googleapis.com/css?family=Marck+Script|Berkshire+Swash', :rel => 'stylesheet' }
-        %link{ :rel => 'stylesheet', :href => 'assets/application.scss' }
+        %link{ :rel => 'stylesheet', :href => '/assets/application.scss' }
         %script{ :src => 'http://code.jquery.com/jquery-2.1.0.min.js', :type => 'text/javascript' }
-        %script{ :src => 'assets/application.js', :type => 'text/javascript' }
+        %script{ :src => '/assets/application.js', :type => 'text/javascript' }
     %body
         = yield_content( :header ) if content_for?( :header )
         = yield_content( :body ) if content_for?( :body )
