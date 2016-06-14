@@ -1,0 +1,36 @@
+- content_for( :page_title ) { 'Posts' }
+- content_for( :actions ) do
+    %a.button.-dark{ :href => '/admin/posts/new' }
+        New
+
+%main.page-content
+    %section
+        %div.content
+            - if !@posts_by_year.empty?
+                - @years.each do | year |
+                    %div.column-20
+                        %h2.admin-index__divider-title
+                            = year
+                        %span.admin-index__divider-note
+                            = "(#{@posts_by_year[ year ].size} posts)"
+                    %div.column-80
+                        %table.admin-index
+                            %tbody
+                                %tr
+                                    %th
+                                        Title
+                                    %th
+                                        Day
+                                - i = 1
+                                - @posts_by_year[ year ].each do | post |
+                                    %tr{ :class => i.odd? ? 'odd' : 'even' }
+                                        %td
+                                            %a{ :href => "/admin/posts/#{post.id}" }
+                                                = post.title
+                                        %td
+                                            = "#{post.created_at.strftime('%B')} #{post.created_at.day}"
+                                    - i = i + 1
+            - else
+                %div.column-100
+                    %p.t-empty
+                        You haven't written any posts yet.

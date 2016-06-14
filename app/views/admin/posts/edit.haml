@@ -1,10 +1,10 @@
+- content_for( :page_title ) { 'Edit Post' }
+
 %main.page-content
     %section
         %div.content
             %div.column-100
-                %h1.heading.-medium
-                    Edit Post
-                %form{ :action => "/posts/#{@post.id}", :method => :post }
+                %form{ :action => "/admin/posts/#{@post.id}", :method => :post }
                     %input{ :name => '_method', :type => 'hidden', :value => 'patch' }
                     %div.field
                         %label{ :for => 'post_title' }
@@ -16,5 +16,7 @@
                         %textarea#post_body{ :name => 'post[body]', :rows => 15 }
                             = @post.body
                     %div.buttons
-                        %button.button.-dark.-large{ :type => 'submit' }
+                        %button.button.-dark{ :type => 'submit' }
                             Submit
+                        %a.button.-plain{ :href => "/admin/posts/#{@post.id}" }
+                            Cancel

@@ -1,0 +1,15 @@
+.utility-bar {
+    line-height: 4em;
+    
+    .content {
+        border-bottom: 1px solid $color-gainsboro;
+    }
+}
+
+.utility-bar__actions {
+    float: right;
+}
+
+.utility-bar__heading {
+    float: left;
+}

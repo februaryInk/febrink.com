@@ -1,0 +1,17 @@
+- content_for( :page_title ) { 'Preview Post' }
+- content_for( :actions ) do
+    %a.button.-dark{ :href => "/admin/posts/#{@post.id}/edit" }
+        Edit
+    %form.inline{ :action => "/admin/posts/#{@post.id}", :method => :post }
+        %input{ :name => '_method', :type => 'hidden', :value => 'delete' }
+        %button.button.-plain{ :type => 'submit' }
+            Delete
+
+%main.page-content
+    %section
+        %div.content
+            %div.column-100
+                %h1.heading.-large
+                    = @post.title
+                %div
+                    = @post.body

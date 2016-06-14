@@ -1,3 +1,7 @@
+- content_for( :header ) { haml( :'layouts/components/_header_admin' ) }
+- content_for( :utility_bar ) { haml( :'layouts/components/_utility_bar_admin' ) }
+- content_for( :footer ) { haml( :'layouts/components/_footer_admin' ) }
+
 - content_for( :body ) do
     = yield
 

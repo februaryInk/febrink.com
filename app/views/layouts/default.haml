@@ -1,5 +1,5 @@
-- content_for( :header ) { haml :'layouts/components/_header' }
-- content_for( :footer ) { haml :'layouts/components/_footer' }
+- content_for( :header ) { haml( :'layouts/components/_header' ) }
+- content_for( :footer ) { haml( :'layouts/components/_footer' ) }
 
 - content_for( :body ) do
     = yield

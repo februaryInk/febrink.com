@@ -11,5 +11,6 @@
         %script{ :src => '/assets/application.js', :type => 'text/javascript' }
     %body
         = yield_content( :header ) if content_for?( :header )
+        = yield_content( :utility_bar ) if content_for?( :utility_bar )
         = yield_content( :body ) if content_for?( :body )
         = yield_content( :footer ) if content_for?( :footer )

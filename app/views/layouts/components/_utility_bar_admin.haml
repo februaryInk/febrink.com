@@ -1,0 +1,8 @@
+%section.utility-bar
+    %div.content
+        %div.column-100
+            %div.utility-bar__heading
+                %h1.heading.-large.margin-b0
+                    = yield_content( :page_title ) if content_for?( :page_title )
+            %div.utility-bar__actions
+                = yield_content( :actions ) if content_for?( :actions )

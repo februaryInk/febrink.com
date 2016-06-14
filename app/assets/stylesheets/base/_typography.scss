@@ -64,6 +64,15 @@ em, i { font-style: italic; }
 .t-medium { font-size: 18px; }
 .t-large { font-size: 20px; }
 
+.t-empty {
+    background-color: $color-white-smoke;
+    border: 1px dashed $color-nobel;
+    color: $color-nobel;
+    padding: 1em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
 a, span { &.underlined { text-decoration: underline; } }
 h1, h2, h3, h4, h5, h6 { 
     &.underlined { 

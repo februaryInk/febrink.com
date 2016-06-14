@@ -1,3 +1,40 @@
+.admin-index {
+    width: 100%;
+    
+    td {
+        font-size: 18px;
+    }
+    
+    td, 
+    th {
+        padding: 0.5em 0.25em;
+    }
+    
+    th {
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    tr {
+        &.odd {
+            background-color: $color-white-smoke;
+        }
+    }
+}
+
+.admin-index__divider-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.admin-index__divider-note {
+    color: $color-nobel;
+    font-size: 18px;
+    vertical-align: baseline;
+}
+
 .content {
     @include overflow-clear;
     
