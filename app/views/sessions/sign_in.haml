@@ -1,0 +1,17 @@
+%main.page-content
+    %section
+        %div.content
+            %div.column-100
+                = haml( :'/shared/_inline_flash' )
+                %form{ :action => '/sign_in', :method => 'post', :role => 'form' }
+                    %div.field
+                        %label{ :for => 'session_name' }
+                            Name
+                        %input#user_name{ :name => 'session[name]', :type => 'text', :value => @user.name }
+                    %div.field
+                        %label{ :for => 'session_password' }
+                            Password
+                        %input{ :name => 'session[password]', :type => 'password' }
+                    %div.buttons
+                        %button.button.-dark{ :type => 'submit' }
+                            Sign In

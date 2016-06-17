@@ -4,10 +4,21 @@
             - if !@posts_by_year.empty?
                 - @years.each do | year |
                     %div.column-20
-                        %h2
+                        %h2.admin-index__divider-title
                             = year
                     %div.column-80
-                        - @posts_by_year[ year ].each do | post |
-                            %a{ :href => "/posts/#{post.id}" }
-                                %h3
-                                    = post.title
+                        %table.admin-index
+                            %tbody
+                                - i = 1
+                                - @posts_by_year[ year ].each do | post |
+                                    %tr{ :class => i.odd? ? 'odd' : 'even' }
+                                        %td.maximized
+                                            %a{ :href => "/admin/posts/#{post.id}" }
+                                                = post.title
+                                        %td.fitted
+                                            = "#{post.created_at.strftime('%B')} #{post.created_at.day}"
+                                    - i = i + 1
+            - else
+                %div.column-100
+                    %p.t-empty
+                        The author hasn't written any posts yet.

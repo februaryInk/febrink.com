@@ -24,10 +24,10 @@
                                 - i = 1
                                 - @posts_by_year[ year ].each do | post |
                                     %tr{ :class => i.odd? ? 'odd' : 'even' }
-                                        %td
+                                        %td.maximized
                                             %a{ :href => "/admin/posts/#{post.id}" }
                                                 = post.title
-                                        %td
+                                        %td.fitted
                                             = "#{post.created_at.strftime('%B')} #{post.created_at.day}"
                                     - i = i + 1
             - else

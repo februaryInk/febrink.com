@@ -11,7 +11,10 @@ class Application < Sinatra::Base
   set( :assets, Sprockets::Environment.new )
   set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
   
+  enable( :sessions )
+  
   register Sinatra::Contrib
+  register Sinatra::Flash
   
   assets.append_path( 'app/assets/fonts' )
   assets.append_path( 'app/assets/images' )
@@ -39,6 +42,15 @@ class Application < Sinatra::Base
   assets.context_class.class_eval do
     def asset_path( path, options = {  } )
       "/assets/#{path}"
+    end
+  end
+  
+  before '/admin/*' do
+    @current_user ||= User.find_by( :id => session[ :user_id ] )
+    
+    if @current_user == nil
+      flash[ :warning ] = 'Restricted access.'
+      redirect( '/posts' )
     end
   end
     

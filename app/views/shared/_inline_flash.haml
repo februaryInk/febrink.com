@@ -1,0 +1,5 @@
+%div#flash-container
+    - flash.each do | message_type, message |
+        - if %W[ alert danger info notice success warning ].include?( message_type.to_s )
+            %p{ class: "inline-flash -#{message_type}" }
+                = message

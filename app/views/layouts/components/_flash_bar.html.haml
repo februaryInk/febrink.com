@@ -1,0 +1,6 @@
+%div#flash-container-bar
+  - flash.each do |message_type, message|
+    - if %W[alert danger info notice success warning].include?(message_type) && message.length > 0
+      %div{ class: "flash flash--#{message_type}" }
+        %div{ class: (namespace == "admin" ? "container container--wide" : "container") }
+          = sanitize(message)
