@@ -1,3 +1,5 @@
+- content_for( :footer ) { haml( :'/layouts/components/_footer' ) }
+
 %script{ :type => 'text/javascript' }
     :plain
         var coverLetterHeight = 0;
@@ -10,7 +12,7 @@
             $( document ).on( 'click', '.js-scroll-link', function( event ) {
                 event.preventDefault(  );
                 
-                var elementPosition = $( $( this ).attr( 'href' ) ).offset(  ).top - $( '.js-sticky-nav' ).height(  );
+                var elementPosition = $( $( this ).attr( 'href' ) ).offset(  ).top - $( '.js-sticky-header' ).height(  );
                 $( 'body, html' ).animate( { scrollTop: elementPosition }, 750 );
             } );
             
@@ -129,14 +131,14 @@
         }
         
         $( window ).scroll( function(  ) {
-            if ( $( this ).scrollTop(  ) > $( '.js-sticky-nav-wrapper' ).offset(  ).top ) {
-                $( '.js-sticky-nav' ).addClass( '-sticky' );
+            if ( $( this ).scrollTop(  ) > $( '.js-sticky-header-wrapper' ).offset(  ).top ) {
+                $( '.js-sticky-header' ).addClass( '-sticky' );
             } else {
-                $( '.js-sticky-nav' ).removeClass( '-sticky' );
+                $( '.js-sticky-header' ).removeClass( '-sticky' );
             }
         } );
 
-%main
+%main.padding-footer
     %div.cover-letter.js-cover-letter
         %canvas#tree-canvas
     %div.js-cover-letter-window
@@ -151,11 +153,11 @@
                         %div.cover-letter-switch.-birch.js-cover-letter-switch{ 'data-tree-type' => 'birch' }
                         %div.cover-letter-switch.-cherry.js-cover-letter-switch{ 'data-tree-type' => 'cherry' }
                         %div.cover-letter-switch.-willow.js-cover-letter-switch{ 'data-tree-type' => 'willow' }
-    %header.js-peek-over
-        %div.header__nav-wrapper.js-sticky-nav-wrapper
-            %nav.header__nav--public.js-sticky-nav
-                %div.content
-                    %div.column-100
+    %div.header-wrapper--public.js-peek-over.js-sticky-header-wrapper
+        %header.header--public.-seamless.js-sticky-header
+            %div.content
+                %div.column-100
+                    %nav.header__nav--public
                         %ul
                             %li
                                 %a.js-scroll-link{ :href => '#about' }

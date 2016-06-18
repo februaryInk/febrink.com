@@ -1,0 +1,20 @@
+- content_for( :body_class ) { 'colored' }
+
+%main.full-height.page-content
+    %section
+        %div.content
+            %div.column-100
+                %div.even-split.full-height
+                    %div
+                        %div.align-middle
+                            %h1.heading.-flourish.-grand
+                                404: Not Found
+                            %p
+                                Were you looking for me? Because there's nothing else here...
+                        %div.align-middle
+                            %div.red-fox-container
+                                = erb( :'/errors/_red_fox' )
+                                %div.left-eye-wrapper
+                                    %div.eye
+                                %div.right-eye-wrapper
+                                    %div.eye

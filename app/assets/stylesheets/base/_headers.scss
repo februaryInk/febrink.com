@@ -23,15 +23,35 @@
 }
 
 .header--public {
-    background-color: $color-white;
-    padding-bottom: 1em;
-    padding-top: 1em;
+    background-color: $color-gainsboro;
+    border-bottom: 1px solid $color-silver;
+    line-height: 4em;
     position: relative;
     width: 100%;
+    
+    &.-seamless {
+        background-color: $color-white;
+        border-bottom: none;
+    }
+    
+    &.-sticky {
+        background-color: rgba( 256, 256, 256, 0.90 );
+        border-bottom: 1px solid $color-silver;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+        z-index: 100;
+    }
+}
+
+.header__logo--public {
+    float: left;
 }
 
 .header__nav--public {
-    background-color: rgba( 256, 256, 256, 0.90 );
+    float: right;
     
     a {
         border-bottom: 2px solid transparent;
@@ -43,28 +63,22 @@
     }
     
     ul {
+        @include overflow-clear;
+        
         list-display: none;
         width: 100%;
         
         li {
             float: left;
-            line-height: 4em;
-            margin-right: 2em;
+            margin-left: 2em;
         }
-    }
-    
-    &.-sticky {
-        border-bottom: 1px solid $color-silver;
-        left: 0;
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 100%;
-        z-index: 100;
     }
 }
 
-.header__nav-wrapper--public {
+.header-wrapper--public {
+    @include overflow-clear;
+    
+    background-color: $color-white;
     height: 4em;
     width: 100%;
 }

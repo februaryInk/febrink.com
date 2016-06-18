@@ -1,3 +1,5 @@
+.align-middle { vertical-align: middle; }
+
 .clear { clear: both; }
 
 .fitted { text-align: center; white-space: nowrap; }
@@ -31,7 +33,9 @@ a.full-width, input[type=submit].full-width { display: block; text-align: center
 
 .no-white-space { line-height: 1em; margin: 0; padding: 0; }
 
-.padding-b1 { margin-bottom: 1em; }
+.padding-b1 { padding-bottom: 1em; }
+
+.padding-footer { padding-bottom: 4em; }
 
 .padding-l2 { padding-left: 2em; }
 

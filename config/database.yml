@@ -18,6 +18,6 @@ production:
   adapter: postgresql
   database: febrink_production
   encoding: utf8
-  host: localhost
+  host: <%= ENV[ 'DATABASE_URL' ] %>
   password: <%= ENV[ 'DATABASE_PASSWORD' ] %>
   username: <%= ENV[ 'DATABASE_USERNAME' ] %>

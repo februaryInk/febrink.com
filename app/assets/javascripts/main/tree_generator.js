@@ -320,7 +320,7 @@ Branch.prototype.grow = function(  ) {
         this.generator.canvas.context2d.strokeStyle = this.generator.config.branchColors[ Math.floor( Math.random(  ) * this.generator.config.branchColors.length ) ];
         this.generator.canvas.context2d.lineWidth = this.width;
         this.generator.canvas.context2d.beginPath(  );
-        this.generator.canvas.context2d.moveTo( this.xPrev, this.yPrev );
+        this.generator.canvas.context2d.moveTo( Math.floor( this.xPrev ), Math.floor( this.yPrev ) );
         
         this.lifetime = this.lifetime + 1;
         this.width = this.width - this.loss;
@@ -329,7 +329,7 @@ Branch.prototype.grow = function(  ) {
         this.x = this.x + this.dx;
         this.y = this.y + this.dy;
         
-        this.generator.canvas.context2d.lineTo( this.x, this.y );
+        this.generator.canvas.context2d.lineTo( Math.floor( this.x ), Math.floor( this.y ) );
         this.generator.canvas.context2d.stroke(  );
         this.generator.canvas.context2d.globalCompositeOperation = 'source-over';
         

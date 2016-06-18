@@ -10,6 +10,7 @@ class Application < Sinatra::Base
   
   set( :assets, Sprockets::Environment.new )
   set( :root, File.dirname( File.expand_path( '../..', __FILE__ ) ) )
+  set( :show_exceptions, :after_handler )
   
   enable( :sessions )
   
@@ -45,12 +46,15 @@ class Application < Sinatra::Base
     end
   end
   
+  not_found do
+    haml( :'/errors/404', :layout => :default )
+  end
+  
   before '/admin/*' do
     @current_user ||= User.find_by( :id => session[ :user_id ] )
     
     if @current_user == nil
-      flash[ :warning ] = 'Restricted access.'
-      redirect( '/posts' )
+      raise Sinatra::NotFound
     end
   end
     

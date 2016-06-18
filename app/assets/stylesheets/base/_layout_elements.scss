@@ -35,6 +35,15 @@
     vertical-align: baseline;
 }
 
+.colored {
+    background-color: $color-pattens-blue;
+    
+    .header--public {
+        background-color: $color-pattens-blue;
+        border-bottom: none;
+    }
+}
+
 .content {
     @include overflow-clear;
     
@@ -47,17 +56,62 @@
     }
 }
 
+.even-split {
+    @include faux-table;
+    
+    width: 100%;
+    
+    > * > * {
+        width: 50%;
+    }
+}
+
+.eye {
+    animation-name: blink;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-delay: 2s;
+    animation-iteration-count: infinite;
+    background-color: darken( $color-white, 95% );
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+}
+
+
 .faux-table {
     @include faux-table;
 }
 
+.left-eye-wrapper,
+.right-eye-wrapper {
+    display: block;
+    height: 5%;
+    position: absolute;
+    top: 26.5%;
+    width: 5%;
+}
+
+.left-eye-wrapper { 
+    left: 22%;
+}
+
+.right-eye-wrapper { 
+    left: 35%;
+}
+
 .page-content {
     padding-top: 3em;
-    padding-bottom: 15em;
+    padding-bottom: 4em;
     
     &.-lowered {
         padding-top: 8em;
     }
+}
+
+.red-fox-container {
+    position: relative;
+    width: 100%;
 }
 
 #page-wrapper {
