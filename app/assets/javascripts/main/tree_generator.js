@@ -445,8 +445,8 @@ function Leaf ( generator, parent, radius, x, y ) {
     this.live = this.generator.live;
     this.parent = parent;
     this.radius = radius;
-    this.x = x;
-    this.y = y;
+    this.x = Math.floor( x );
+    this.y = Math.floor( y );
     
     if ( this.radius > this.generator.config.initialWidth / 4 ) {
         this.radius = this.generator.config.initialWidth / 4;
@@ -568,7 +568,7 @@ function Twig ( level, generator, parent, width, x, y ) {
         var direction = ( this.xOrigin - this.parent.xOrigin ) / Math.abs( this.xOrigin - this.parent.xOrigin );
         
         this.dy = this.generator.config.growthSegmentLength;
-        this.dx = 3 * direction * ( this.dy / Math.abs( this.dy ) ) * Math.pow( Math.abs( this.dy ), 1 / 3 );
+        this.dx = 3 * direction * ( this.dy / Math.abs( this.dy ) ) * Math.cbrt( Math.abs( this.dy ) );
         this.loss = this.parent.loss / 2;
         
         // never let a twig be so wide that it will extend beyond the canvas.
@@ -627,7 +627,7 @@ Twig.prototype.guide = function(  ) {
         
         // x = ( y - yOrigin )^( 1 / 3 ) + xOrigin
         this.dy = this.generator.config.growthSegmentLength;
-        this.dx = 3 * direction * ( ( ( this.y + this.dy ) - this.yOrigin ) / Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) * ( Math.pow( Math.abs( ( this.y + this.dy ) - this.yOrigin ), 1 / 3 ) - ( ( this.y - this.yOrigin ) / Math.abs( this.y - this.yOrigin ) ) * Math.pow( Math.abs( this.y - this.yOrigin ), 1 / 3 ) );
+        this.dx = 3 * direction * ( ( ( this.y + this.dy ) - this.yOrigin ) / Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) * ( Math.cbrt( Math.abs( ( this.y + this.dy ) - this.yOrigin ) ) - ( ( this.y - this.yOrigin ) / Math.abs( this.y - this.yOrigin ) ) * Math.cbrt( Math.abs( this.y - this.yOrigin ) ) );
     } else if ( this.generator.config.twigShape == 'random' ) {
         this.dx = this.dx + Math.sin( Math.random(  ) + this.lifetime ) * this.generator.config.wiggle;
         this.dy = this.dy + Math.cos( Math.random(  ) + this.lifetime ) * this.generator.config.wiggle;
