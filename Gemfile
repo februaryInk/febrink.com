@@ -12,6 +12,8 @@ gem 'bcrypt'
 
 gem 'haml'
 
+gem 'newrelic_rpm'
+
 gem 'pg'
 
 gem 'sass'

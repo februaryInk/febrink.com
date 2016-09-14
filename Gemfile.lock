@@ -29,6 +29,7 @@ GEM
     json (1.8.3)
     minitest (5.8.4)
     multi_json (1.11.2)
+    newrelic_rpm (3.14.3.313)
     pg (0.18.4)
     puma (2.16.0)
     rack (1.6.4)
@@ -86,6 +87,7 @@ DEPENDENCIES
   autoprefixer-rails
   bcrypt
   haml
+  newrelic_rpm
   pg
   puma
   sass
