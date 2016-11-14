@@ -37,6 +37,7 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+    redcarpet (3.3.2)
     ripl (0.7.1)
       bond (~> 0.5.1)
     ripl-multi_line (0.3.1)
@@ -90,6 +91,7 @@ DEPENDENCIES
   newrelic_rpm
   pg
   puma
+  redcarpet
   sass
   sinatra
   sinatra-activerecord

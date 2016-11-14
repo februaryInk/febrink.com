@@ -16,6 +16,8 @@ gem 'newrelic_rpm'
 
 gem 'pg'
 
+gem 'redcarpet'
+
 gem 'sass'
 
 gem 'sinatra-activerecord'

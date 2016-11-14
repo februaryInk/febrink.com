@@ -35,6 +35,28 @@
     vertical-align: baseline;
 }
 
+.banner {
+    background-color: $color-pattens-blue;
+    background-image: image-url( 'dots.svg' );
+    background-repeat: repeat;
+    padding: 10em;
+    position: relative;
+    
+    &.-blur {
+        &::after {
+            background-image: image-url( 'blur.png' );
+            background-repeat: repeat;
+            bottom: 0;
+            content: '';
+            left: 0;
+            opacity: 0.15;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+    }
+}
+
 .colored {
     background-color: $color-pattens-blue;
     

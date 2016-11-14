@@ -44,7 +44,17 @@ class Application < Sinatra::Base
   end
   
   get '/admin/posts/:id' do
+    markdown = Redcarpet::Markdown.new( Redcarpet::Render::HTML, { 
+      :fenced_code_blocks => true,
+      :footnotes => true,
+      :highlight => true,
+      :lax_spacing => true,
+      :strikethrough => true,
+      :tables => true 
+    } )
+    
     @post = Post.find( params[ :id ] )
+    @body = markdown.render( @post.body )
     haml( :'/admin/posts/show', { :layout => :admin } )
   end
   

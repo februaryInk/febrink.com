@@ -1,6 +1,6 @@
 class Application < Sinatra::Base
 
-  get '/posts' do
+  get '/blog' do
     posts = Post.order( 'created_at DESC' )
     @posts_by_year = {  }
     

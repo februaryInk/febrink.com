@@ -31,8 +31,6 @@ a.full-width, input[type=submit].full-width { display: block; text-align: center
 
 .maximized { width: 99%; }
 
-.no-white-space { line-height: 1em; margin: 0; padding: 0; }
-
 .padding-b1 { padding-bottom: 1em; }
 
 .padding-footer { padding-bottom: 4em; }
@@ -42,3 +40,5 @@ a.full-width, input[type=submit].full-width { display: block; text-align: center
 .padding-r2 { padding-right: 2em; }
 
 .preserve-3d { transform-style: preserve-3d; }
+
+.stripped { line-height: 1em; margin: 0; padding: 0; }

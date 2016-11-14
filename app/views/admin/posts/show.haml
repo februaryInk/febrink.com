@@ -7,11 +7,15 @@
         %button.button.-plain{ :type => 'submit' }
             Delete
 
-%main.page-content
-    %section
+%main
+    %section.banner
         %div.content
             %div.column-100
-                %h1.heading.-large
+                %h1.centered.heading.-grand.-light.margin-b0
                     = @post.title
-                %div
-                    = @post.body
+    %div.page-content
+        %section
+            %div.content
+                %div.column-100
+                    %div.post
+                        = @body
