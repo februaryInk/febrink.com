@@ -78,5 +78,7 @@ thumbs.db
 OTHER
 
 # Commit message text file
+# Local logs
 
 /commit-message.txt
+/log/*.log

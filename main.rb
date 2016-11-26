@@ -46,6 +46,16 @@ class Application < Sinatra::Base
     end
   end
   
+  helpers do
+    def content_tag( type, content, options={} )
+      "<#{type} #{to_attributes(options)}>#{content}</#{type}>"
+    end
+    
+    def to_attributes( options )
+      options.map { | k, v | "#{k}='#{v}'" }.join( ' ' )
+    end
+  end
+  
   not_found do
     haml( :'/errors/404', :layout => :default )
   end
