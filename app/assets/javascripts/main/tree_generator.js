@@ -72,13 +72,12 @@ function Tree ( canvasId, type, config ) {
     
     // avgNumLeaderBranches: statistically typical number of branches off the 
     // leader.
-    // baseGrowthRate: base delay between each growth iteration (actual rates 
-    // vary between branch types, but depend on this). highernumbers result in 
-    // slower overall growth.
     // branchColor: branch color.
     // branchWidth: width of a branch in proportion to its parent.
     // canvasColor: canvas color.
     // grass: should this tree be in grass?
+    // growthRate: delay between each growth iteration. highernumbers result in 
+    // slower overall growth.
     // growthSegmentLength: approximate length branches grow per iteration.
     // initialWidth: starting width of the leader.
     // leaderHeight: height of the leader in proportion to the canvas height.
@@ -105,11 +104,11 @@ function Tree ( canvasId, type, config ) {
     
     this.config = $.extend( {
         avgNumLeaderBranches: 15, 
-        baseGrowthRate: 3, 
         branchColors: [ '#664444' ],
         branchWidth: 0.80,
         canvasColor: '#aaddff',
         grass: true,
+        growthRate: 0,
         growthSegmentLength: 3,
         initialWidth: 30, 
         leaderHeight: 0.95, 
@@ -154,16 +153,51 @@ function Tree ( canvasId, type, config ) {
             this.canvas.context2d.stroke(  );
         }
     }
+    
+    if ( this.config.leaves ) {
+        // put leaves in a separate layer to keep them on top.
+        if ( $( '#leafCanvas' ).length == 0 ) {
+            var leafCanvas = document.createElement( 'canvas' );
+            leafCanvas.id = 'leafCanvas';
+            $( leafCanvas ).insertAfter( '#' + canvasId );
+        }
+        
+        this.leafCanvas = {
+            $element: $( '#leafCanvas' )[ 0 ],
+            context2d: $( '#leafCanvas' )[ 0 ].getContext( '2d' ),
+            height: this.canvas.height,
+            width: this.canvas.width
+        }
+        
+        this.leafCanvas.$element.height = this.canvas.height;
+        this.leafCanvas.$element.width = this.canvas.width;
+    }
 }
 
-Tree.prototype.grow = function(  ) {
+Tree.prototype.continueGrowth = function (  ) {
+    
+    if ( this.activeBranches.length > 0 ) {
+        for ( var i = 0; i < this.activeBranches.length; i = i + 1 ) {
+            this.activeBranches[ i ].grow(  );
+        }
+        
+        var self = this;
+        
+        setTimeout( function (  ) {
+			      self.continueGrowth(  );
+		    }, this.config.growthRate );
+    }
+}
+
+Tree.prototype.grow = function (  ) {
     
     this.leader = new Leader( 0, this, null, this.config.initialWidth, this.config.xOrigin, this.config.yOrigin );
+    this.continueGrowth(  );
 }
 
 Tree.prototype.instances = [  ];
 
-Tree.prototype.kill = function(  ) {
+Tree.prototype.kill = function (  ) {
     
     this.live = false;
     this.leader.live = false;
@@ -221,14 +255,12 @@ function Branch ( level, generator, parent, width, x, y ) {
     
     // dx: change in x-position for the next growth iteration.
     // dy: change in y-position for the next growth iteration.
-    // growthRate: delay between each growth iteration for this branch.
     // loss: width taken off per growth iteration.
     // postLimbWidth: width after generating a limb in proportion to this 
     // branch's previous width.
     
     this.dx = 0;
     this.dy = 0;
-    this.growthRate = this.generator.config.growthRate;
     this.loss = 0.03;
     this.postLimbWidth = 1.00;
 }
@@ -247,13 +279,7 @@ Branch.prototype.continueGrowth = function (  ) {
     
     // if the width is still distinguishable, continue this branch.
     if ( this.width >= 1 ) {
-        var self = this;
-        
         this.guide(  );
-        
-        setTimeout( function (  ) {
-			      self.grow(  );
-		    }, this.growthRate );
     } else {
         var activeIndex = this.generator.activeBranches.indexOf( this );
         
@@ -395,7 +421,6 @@ function Leader ( level, generator, parent, width, x, y ) {
     
     // dx: see Branch.
     // dy: see Branch.
-    // growthRate: see Branch.
     // expectedLifetime: expected number of total iterations before this branch 
     // ends.
     // loss: see Branch.
@@ -407,7 +432,6 @@ function Leader ( level, generator, parent, width, x, y ) {
     
     this.dx = 0;
     this.dy = -1 * this.generator.config.growthSegmentLength;
-    this.growthRate = this.generator.config.baseGrowthRate;
     this.expectedLifetime = ( ( this.generator.config.leaderHeight * this.generator.canvas.height ) / this.generator.config.growthSegmentLength );
     this.loss = ( this.generator.config.initialWidth - 1 ) / this.expectedLifetime;
     this.maxLimbs = this.generator.config.maxLeaderLimbs;
@@ -452,20 +476,16 @@ function Leaf ( generator, parent, radius, x, y ) {
         this.radius = this.generator.config.initialWidth / 4;
     }
     
-    var self = this;
-    
-    setTimeout( function(  ) {
-        self.grow(  );
-    }, 500 );
+    this.grow(  );
 }
 
 Leaf.prototype.grow = function (  ) {
     
     if ( this.live ) {
-        this.generator.canvas.context2d.beginPath(  );
-        this.generator.canvas.context2d.arc( this.x, this.y, this.radius, 0, 2 * Math.PI, false );
-        this.generator.canvas.context2d.fillStyle = this.generator.config.leafColors[ Math.floor( Math.random(  ) * this.generator.config.leafColors.length ) ];
-        this.generator.canvas.context2d.fill(  );
+        this.generator.leafCanvas.context2d.beginPath(  );
+        this.generator.leafCanvas.context2d.arc( this.x, this.y, this.radius, 0, 2 * Math.PI, false );
+        this.generator.leafCanvas.context2d.fillStyle = this.generator.config.leafColors[ Math.floor( Math.random(  ) * this.generator.config.leafColors.length ) ];
+        this.generator.leafCanvas.context2d.fill(  );
     }
 }
 
@@ -477,7 +497,6 @@ function Limb ( level, generator, parent, width, x, y ) {
     
     // dx: see Branch.
     // dy: see Branch.
-    // growthRate: see Branch.
     // loss: see Branch.
     // maxLimbs: maximum number of limbs.
     // postLimbWidth: see Branch.
@@ -494,7 +513,6 @@ function Limb ( level, generator, parent, width, x, y ) {
     
     this.dx = this.generator.config.growthSegmentLength * Math.cos( angle );
     this.dy = this.generator.config.growthSegmentLength * Math.sin( angle );
-    this.growthRate = this.generator.config.baseGrowthRate;
     this.loss = this.generator.leader.loss * this.generator.config.branchWidth;
     this.maxLimbs = ( level <= 1 ? this.generator.config.maxLimbLimbs : 0 );
     this.postLimbWidth = 0.80;
@@ -512,13 +530,7 @@ Limb.prototype.continueGrowth = function (  ) {
     
     if ( this.width >= 2 ) {
         
-        var self = this;
-        
         this.guide(  );
-        
-        setTimeout( function (  ) {
-            self.grow(  );
-        }, this.growthRate );
     // terminate in a small twig.
     } else {
         var activeIndex = this.generator.activeBranches.indexOf( this );
@@ -556,11 +568,9 @@ function Twig ( level, generator, parent, width, x, y ) {
     
     // dx: see Branch.
     // dy: see Branch.
-    // growthRate: see Branch.
     // leafThresh: chance a new leaf will grow when conditions are appropriate.
     // loss: see Branch.
     
-    this.growthRate = this.generator.config.baseGrowthRate * 2;
     this.leafThresh = this.generator.config.twigLeafThresh;
         
     if ( this.generator.config.twigShape == 'cubic' ) {
